@@ -50,18 +50,12 @@
       openssl_privatekey:
         path: '{{ logstash_key_path }}/{{ logstash_ssl_key_file_name }}'
         size: '{{ logstash_ssl_key_size | int }}'
-      when:
-        - not key_file.exists
-        - not cert_file.exists
 
     - name: Create CSR
       openssl_csr:
         path: '/tmp/{{ logstash_ssl_cert_file_name }}.csr'
         privatekey_path: '{{ logstash_key_path }}/{{ logstash_ssl_key_file_name }}'
         common_name: '{{ logstash_ca_domain }}'
-      when:
-        - not key_file.exists
-        - not cert_file.exists
 
     - name: Create certificates for keystore
       openssl_certificate:
@@ -70,8 +64,8 @@
         privatekey_path: '{{ logstash_key_path }}/{{ logstash_ssl_key_file_name }}'
         provider: '{{ logstash_ssl_certificate_provider }}'
         force: True
-      when:
-        - not key_file.exists
-        - not cert_file.exists
 
+  when:
+    - not key_file.stat.exists
+    - not cert_file.stat.exists
   become: True
