@@ -14,9 +14,9 @@ logstash_ssl_key_file_name: '{{ logstash_host }}.key.pem'
 logstash_ssl_cert_file_name: '{{ logstash_host }}.cert.pem'
 logstash_local_certs: True
 logstash_local_key_path: '{{ role_path }}/files/{{ logstash_ssl_key_file_name }}'
-logstash_local_key_path: '{{ role_path }}/files/{{ logstash_ssl_cert_file_name }}'
-logstash_key_path: '{{ ansible_os_family == 'Debian' | ternary('/etc/ssl/private' ,'/etc/pki/tls/private') }}'
-logstash_cert_path: '{{ ansible_os_family == 'Debian' | ternary('/etc/ssl/certs' ,'/etc/pki/tls/certs') }}'
+logstash_local_cert_path: '{{ role_path }}/files/{{ logstash_ssl_cert_file_name }}'
+logstash_key_path: '{{ ansible_os_family == 'Debian' | ternary("/etc/ssl/private" ,"/etc/pki/tls/private") }}'
+logstash_cert_path: '{{ ansible_os_family == 'Debian' | ternary("/etc/ssl/certs" ,"/etc/pki/tls/certs") }}'
 logstash_ssl_key_size: 4096
 logstash_ca_domain: '{{ logstash_host }}'
 # https://docs.ansible.com/ansible/latest/openssl_certificate_module.html
