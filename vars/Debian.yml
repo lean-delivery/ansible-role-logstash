@@ -1,0 +1,9 @@
+---
+requirements:
+  - openssl
+  - openssh-client
+  - python-pip
+  - net-tools
+  - python
+  - unzip
+  - lsof

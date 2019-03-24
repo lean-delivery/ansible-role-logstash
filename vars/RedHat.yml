@@ -1,0 +1,12 @@
+---
+requirements:
+  - openssl
+  - python-devel
+  - openssl-devel
+  - openssh-clients
+  - python2-pip
+  - net-tools
+  - python
+  - unzip
+  - lsof
+  - libselinux-python
