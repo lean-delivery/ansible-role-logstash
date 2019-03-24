@@ -36,6 +36,9 @@ logstash_limits_nofile: 204800
 logstash_limits_stack: 4096
 logstash_limits_nproc: 24576
 
+logstash_service_autostart: True
+logstash_service_start: True
+
 elasticsearch_index_name: '%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}'
 
 es_apt_url: 'deb https://artifacts.elastic.co/packages/{{ es_repo_name }}/apt stable main'

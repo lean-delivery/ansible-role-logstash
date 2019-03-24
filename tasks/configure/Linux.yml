@@ -39,6 +39,7 @@
   loop: '{{ logstash_plugins }}'
   loop_control:
     loop_var: plugin
+  changed_when: False
   become: True
 
 - block:

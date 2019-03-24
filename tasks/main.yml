@@ -26,3 +26,10 @@
 
 - name: Logstash configuration
   include_tasks: 'configure/{{ ansible_system }}.yml'
+
+- name: Logstash service
+  service:
+    name: logstash
+    state: '{{ (logstash_service_start) | ternary('started','stopped') }}'
+    enabled: '{{ logstash_service_autostart }}'
+  become: True
