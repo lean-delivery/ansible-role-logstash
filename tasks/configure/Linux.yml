@@ -33,6 +33,8 @@
 
 - name: Install logstash plugins
   command: '{{ logstash_plugin_bin }} install {{ plugin }}'
+  args:
+    creates: '{{ logstash_plugin_bin }}'
   loop: '{{ logstash_plugins }}'
   loop_control:
     loop_var: plugin
