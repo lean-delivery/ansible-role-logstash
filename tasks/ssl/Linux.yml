@@ -4,7 +4,6 @@
     path: '{{ logstash_local_key_path }}'
   delegate_to: '{{ logstash_local_certs | ternary("localhost", inventory_hostname) }}'
   register: key_file
-  become: True
   when: logstash_local_certs
 
 - name: Check if local cert exists
@@ -12,7 +11,6 @@
     path: '{{ logstash_local_cert_path }}'
   delegate_to: '{{ logstash_local_certs | ternary("localhost", inventory_hostname) }}'
   register: cert_file
-  become: True
   when: logstash_local_certs
 
 - name: Copy key file
