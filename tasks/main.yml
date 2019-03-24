@@ -3,14 +3,6 @@
 - name: Load a variables
   include_vars: '{{ ansible_os_family }}.yml'
 
-- name: Install requirements
-  package:
-    name: '{{ requirements }}'
-    state: present
-  register: installed_packages
-  until: installed_packages is succeeded
-  become: True
-
 - name: Choose platform based task
   include_tasks: '{{ platform }}'
   with_first_found:
@@ -18,6 +10,14 @@
     - 'system/not-supported.yml'
   loop_control:
     loop_var: platform
+
+- name: Install requirements
+  package:
+    name: '{{ requirements }}'
+    state: present
+  register: installed_packages
+  until: installed_packages is succeeded
+  become: True
 
 - name: SSL preparation
   include_tasks: 'ssl/{{ ansible_system }}.yml'
