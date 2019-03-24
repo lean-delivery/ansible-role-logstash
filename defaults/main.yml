@@ -1,0 +1,45 @@
+---
+# defaults file for logstash
+elastic_branch: 6
+
+logstash_host: '{{ ansible_fqdn }}'
+logstash_port: 5555
+
+elasticsearch_host: elasticsearch.example.com
+elasticsearch_port: 9200
+
+#SSL certificate
+logstash_enable_ssl: True
+logstash_ssl_key_file_name: '{{ logstash_host }}.key.pem'
+logstash_ssl_cert_file_name: '{{ logstash_host }}.cert.pem'
+logstash_local_certs: True
+logstash_local_key_path: '{{ role_path }}/files/{{ logstash_ssl_key_file_name }}'
+logstash_local_key_path: '{{ role_path }}/files/{{ logstash_ssl_cert_file_name }}'
+logstash_key_path: '{{ ansible_os_family == 'Debian' | ternary('/etc/ssl/private' ,'/etc/pki/tls/private') }}'
+logstash_cert_path: '{{ ansible_os_family == 'Debian' | ternary('/etc/ssl/certs' ,'/etc/pki/tls/certs') }}'
+logstash_ssl_key_size: 4096
+logstash_ca_domain: '{{ logstash_host }}'
+# https://docs.ansible.com/ansible/latest/openssl_certificate_module.html
+logstash_ssl_certificate_provider: selfsigned
+
+logstash_dir: /usr/share/logstash
+logstash_plugin_bin: '{{ logstash_dir }}/bin/logstash-plugin'
+logstash_plugins:
+  - logstash-input-beats
+
+logstash_add_custom_grok_patterns: True
+logstash_custom_grok_patterns_files:
+  - grok_patterns.custom
+
+logstash_limits_set: True
+logstash_limits_nofile: 204800
+logstash_limits_stack: 4096
+logstash_limits_nproc: 24576
+
+elasticsearch_index_name: '%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}'
+
+es_apt_url: 'deb https://artifacts.elastic.co/packages/{{ es_repo_name }}/apt stable main'
+es_yum_url: 'https://artifacts.elastic.co/packages/{{ es_repo_name }}/yum'
+es_repo_file: 'elastic-{{ es_major_version }}'
+elastic_gpg_key: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+es_use_oss_version: False

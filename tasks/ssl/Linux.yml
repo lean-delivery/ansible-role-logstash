@@ -1,0 +1,77 @@
+---
+- name: Check if local key exists
+  stat:
+    path: '{{ logstash_local_key_path }}'
+  delegate_to: '{{ logstash_local_certs | ternary("localhost", inventory_hostname) }}'
+  register: key_file
+  when: logstash_local_certs
+
+- name: Check if local cert exists
+  stat:
+    path: '{{ logstash_local_cert_path }}'
+  delegate_to: '{{ logstash_local_certs | ternary("localhost", inventory_hostname) }}'
+  register: cert_file
+  when: logstash_local_certs
+
+- name: Copy key file
+  copy:
+    src: '{{ logstash_local_key_path }}'
+    dest: '{{ logstash_key_path }}'
+    owner: root
+    group: root
+    mode: 0644
+    remote_src: '{{ not logstash_local_certs }}'
+  become: True
+  when: key_file.stat.exists
+
+- name: Copy cert file
+  copy:
+    src: '{{ logstash_local_cert_path }}'
+    dest: '{{ logstash_cert_path }}'
+    owner: root
+    group: root
+    mode: 0644
+    remote_src: '{{ not logstash_local_certs }}'
+  become: True
+  when: cert_file.stat.exists
+
+- name: Check if key exists
+  stat:
+    path: '{{ logstash_key_path }}/{{ logstash_ssl_key_file_name }}'
+  register: key_file
+
+- name: Check if cert exists
+  stat:
+    path: '{{ logstash_cert_path }}/{{ logstash_ssl_cert_file_name }}'
+  register: cert_file
+
+- block:
+    - name: Create private certificate
+      openssl_privatekey:
+        path: '{{ logstash_key_path }}/{{ logstash_ssl_key_file_name }}'
+        size: '{{ logstash_ssl_key_size | int }}'
+      when:
+        - not key_file.exists
+        - not cert_file.exists
+
+    - name: Create CSR
+      openssl_csr:
+        path: '/tmp/{{ logstash_ssl_cert_file_name }}.csr'
+        privatekey_path: '{{ logstash_key_path }}/{{ logstash_ssl_key_file_name }}'
+        common_name: '{{ logstash_ca_domain }}'
+      when:
+        - not key_file.exists
+        - not cert_file.exists
+
+    - name: Create certificates for keystore
+      openssl_certificate:
+        csr_path: '/tmp/{{ logstash_ssl_cert_file_name }}.csr'
+        path: '{{ logstash_cert_path }}/{{ logstash_ssl_cert_file_name }}'
+        privatekey_path: '{{ logstash_key_path }}/{{ logstash_ssl_key_file_name }}'
+        provider: '{{ logstash_ssl_certificate_provider }}'
+        force: True
+      when:
+        - not key_file.exists
+        - not cert_file.exists
+
+  become: True

@@ -1,0 +1,74 @@
+- name: Create custom patterns directory
+  file:
+    path: '{{ logstash_dir }}/custom_patterns'
+    state: directory
+    mode: 0755
+  become: True
+
+- name: Install custom grok patterns
+  copy:
+    src: '{{ role_path }}/files/{{ grok_pattern }}'
+    dest: '{{ logstash_dir }}/custom_patterns/{{ grok_pattern }}'
+    owner: root
+    group: root
+    mode: 0644
+  loop: '{{ logstash_custom_grok_patterns_files }}'
+  loop_control:
+    loop_var: grok_pattern
+  become: True
+
+- name: Install Logstash configs
+  template:
+    src: '{{ logstash_config }}.j2'
+    dest: '/etc/logstash/conf.d/{{ logstash_config }}'
+    owner: root
+    group: root
+    mode: 0644
+  loop:
+    - 20-filebeat-input.conf
+    - 75-elasticsearch-output.conf
+  loop_control:
+    loop_var: logstash_config
+  become: True
+
+- name: Install logstash plugins
+  command: '{{ logstash_plugin_bin }} install {{ plugin }}'
+  loop: '{{ logstash_plugins }}'
+  loop_control:
+    loop_var: plugin
+  become: True
+
+- block:
+  - name: Set nofile limit
+    pam_limits:
+      domain: '*'
+      limit_type: '{{ item }}'
+      limit_item: nofile
+      use_max: True
+      value: '{{ logstash_limits_nofile | int }}'
+    loop:
+      - soft
+      - hard
+
+  - name: Set stack limit
+    pam_limits:
+      domain: '*'
+      limit_type: '{{ item }}'
+      limit_item: stack
+      use_max: True
+      value: '{{ logstash_limits_stack | int }}'
+    loop:
+      - soft
+      - hard
+
+  - name: Set nproc limit
+    pam_limits:
+      domain: '*'
+      limit_type: '{{ item }}'
+      limit_item: nproc
+      use_max: True
+      value: '{{ logstash_limits_nproc | int }}'
+    loop:
+      - soft
+      - hard
+when: logstash_limits_set
