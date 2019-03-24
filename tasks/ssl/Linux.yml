@@ -41,11 +41,13 @@
   stat:
     path: '{{ logstash_key_path }}/{{ logstash_ssl_key_file_name }}'
   register: key_file
+  become: True
 
 - name: Check if cert exists
   stat:
     path: '{{ logstash_cert_path }}/{{ logstash_ssl_cert_file_name }}'
   register: cert_file
+  become: True
 
 - block:
     - name: Install pip packages
