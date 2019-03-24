@@ -71,4 +71,4 @@
     loop:
       - soft
       - hard
-when: logstash_limits_set
+  when: logstash_limits_set
