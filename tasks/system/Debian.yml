@@ -28,4 +28,4 @@
         force: False
       register: installed_package
       until: installed_package is succeeded
-become: True
+  become: True
