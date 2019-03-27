@@ -27,6 +27,14 @@ logstash_plugin_bin: '{{ logstash_dir }}/bin/logstash-plugin'
 logstash_plugins:
   - logstash-input-beats
 
+logstash_add_custom_filters: True
+logstash_local_custom_filters: True
+logstash_custom_filters_path: '{{ role_path }}/files/filters'
+logstash_custom_filters_files:
+  - 25-nginx.conf
+  - 26-apache.conf
+  - 27-solr.conf
+
 logstash_add_custom_grok_patterns: True
 logstash_custom_grok_patterns_files:
   - grok_patterns.custom

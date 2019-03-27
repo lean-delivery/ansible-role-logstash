@@ -42,6 +42,20 @@
   changed_when: False
   become: True
 
+- name: Install Logstash custom filters
+  copy:
+    src: '{{ logstash_custom_filters_path }}/{{ logstash_filter }}'
+    dest: '/etc/logstash/conf.d/{{ logstash_filter }}'
+    owner: root
+    group: root
+    mode: 0644
+    remote_src: '{{ not logstash_local_custom_filters }}'
+  loop: '{{ logstash_custom_filters_files }}'
+  loop_control:
+    loop_var: logstash_filter
+  when: logstash_add_custom_filters
+  become: True
+
 - block:
   - name: Set nofile limit
     pam_limits:
