@@ -1,6 +1,7 @@
 ---
 # defaults file for logstash
 elastic_branch: 6
+es_major_version: '{{ elastic_branch }}.x'
 
 logstash_host: '{{ ansible_fqdn }}'
 logstash_port: 5555

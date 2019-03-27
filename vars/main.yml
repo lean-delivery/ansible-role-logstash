@@ -1,4 +1,3 @@
 ---
 # vars file for logstash
-es_major_version: '{{ elastic_branch }}.x'
 es_repo_name: '{{ es_use_oss_version | ternary("oss-" + es_major_version, es_major_version) }}'

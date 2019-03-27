@@ -27,6 +27,8 @@ Role Variables
 
 - `elastic_branch`:
  Is used to select main Elasticsearch branch to be installed (5.x or 6.x current stable versions). By default this variable is set to `6`. So, 6.x version is installed by default. You can override this by setting this variable in playbook. Default to `6`
+- `es_major_version`:
+The version to install. Default to `'{{ elastic_branch }}.x'`
 
 - `logstash_host`:
 Logstash host name. Default to `'{{ ansible_fqdn }}'`
