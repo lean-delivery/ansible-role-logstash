@@ -30,6 +30,6 @@
 - name: Logstash service
   service:
     name: '{{ ls_service_name }}'
-    state: '{{ (ls_service_start) | ternary("started","stopped") }}'
+    state: '{{ (ls_service_start) | ternary("restarted","stopped") }}'
     enabled: '{{ ls_service_autostart }}'
   become: True

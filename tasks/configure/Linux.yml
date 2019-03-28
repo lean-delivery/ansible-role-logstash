@@ -34,7 +34,6 @@
       loop:
         - ls_conf_dir
         - ls_log_dir
-        - ls_pid_dir
         - ls_data_dir
       loop_control:
         loop_var: ls_path_item
@@ -48,7 +47,6 @@
       loop:
         - ls_conf_dir
         - ls_log_dir
-        - ls_pid_dir
         - ls_data_dir
       loop_control:
         loop_var: ls_path_item
