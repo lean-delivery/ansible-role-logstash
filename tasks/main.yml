@@ -22,14 +22,14 @@
 - name: SSL preparation
   include_tasks: 'ssl/{{ ansible_system }}.yml'
   when:
-    - logstash_enable_ssl
+    - ls_enable_ssl
 
 - name: Logstash configuration
   include_tasks: 'configure/{{ ansible_system }}.yml'
 
 - name: Logstash service
   service:
-    name: logstash
-    state: '{{ (logstash_service_start) | ternary("started","stopped") }}'
-    enabled: '{{ logstash_service_autostart }}'
+    name: '{{ ls_service_name }}'
+    state: '{{ (ls_service_start) | ternary("started","stopped") }}'
+    enabled: '{{ ls_service_autostart }}'
   become: True

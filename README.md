@@ -30,10 +30,30 @@ Role Variables
 - `es_major_version`:
 The version to install. Default to `'{{ elastic_branch }}.x'`
 
-- `logstash_host`:
+- `ls_host`:
 Logstash host name. Default to `'{{ ansible_fqdn }}'`
-- `logstash_port`:
+- `ls_port`:
 Logstash port. Used for agents connection. Default to `5555`
+- `ls_xms`:
+Initial size of total heap space. Default to `1g`
+- `ls_xmx`:
+Maximum size of total heap space. Default to `1g`
+
+- `ls_config`:
+All Logstash configuration parameters are supported. This is achieved using a configuration map parameter `ls_config` which is serialized into the logstash.yml file.
+The use of a map ensures the Ansible playbook does not need to be updated to reflect new/deprecated/plugin configuration parameters. Default to `[]`
+- `ls_home`:
+Path to logstash home directory. Default to `/usr/share/logstash`
+- `ls_pid_file`:
+Path to logstash pid file. Default to `/var/run/logstash.pid`
+- `ls_log_dir`:
+Path to logstash log directory. Default to `/var/log/logstash`
+- `ls_conf_dir`:
+Path to logstash configuration directory. Default to `/etc/logstash`
+- `ls_data_dir`:
+Path to logstash data directory. Default to `/var/lib/logstash`
+- `ls_nice_level`:
+Logstash nice level. Default to `19`
 
 - `elasticsearch_host`:
 Specifies the address to which the elasticsearch server will bind. Default to `elasticsearch.example.com`
@@ -41,63 +61,63 @@ Specifies the address to which the elasticsearch server will bind. Default to `e
 Port on which elasticsearch listen to incoming requests. Default value is `9200`
 
 ## SSL certificate
-- `logstash_enable_ssl`:
+- `ls_enable_ssl`:
 To enable SSL on Logstash(to be accessed from agents). Default to `True`
-- `logstash_ssl_key_file_name`:
-Private key file name. Default to `'{{ logstash_host }}.key.pem'`
-- `logstash_ssl_cert_file_name`:
-Certificate file name. Default to `'{{ logstash_host }}.cert.pem'`
-- `logstash_local_certs`:
+- `ls_ssl_key_file_name`:
+Private key file name. Default to `'{{ ls_host }}.key.pem'`
+- `ls_ssl_cert_file_name`:
+Certificate file name. Default to `'{{ ls_host }}.cert.pem'`
+- `ls_local_certs`:
 To find prepared certificate files on ansible host. If False - will try to fing certificates on remote host. Default to `True`
-- `logstash_local_key_path`:
-Prepared private key file path. Default to `'{{ role_path }}/files/{{ logstash_ssl_key_file_name }}'`
-- `logstash_local_cert_path`:
-Prepared certificate file path. Default to `'{{ role_path }}/files/{{ logstash_ssl_cert_file_name }}'`
-- `logstash_key_path`:
+- `ls_local_key_path`:
+Prepared private key file path. Default to `'{{ role_path }}/files/{{ ls_ssl_key_file_name }}'`
+- `ls_local_cert_path`:
+Prepared certificate file path. Default to `'{{ role_path }}/files/{{ ls_ssl_cert_file_name }}'`
+- `ls_key_path`:
 Private key file destination path. Default to `'{{ (ansible_os_family == "Debian") | ternary("/etc/ssl/private","/etc/pki/tls/private") }}'`
-- `logstash_cert_path`:
+- `ls_cert_path`:
 Certificate file destination path. Default to `'{{ (ansible_os_family == "Debian") | ternary("/etc/ssl/certs","/etc/pki/tls/certs") }}'`
-- `logstash_ssl_key_size`:
+- `ls_ssl_key_size`:
 Private key encryption size (to create certificate if not exists). Default to `4096`
-- `logstash_ca_domain`:
-  Certificate domain (to create certificate if not exists). Default to `'{{ logstash_host }}'`
+- `ls_ca_domain`:
+  Certificate domain (to create certificate if not exists). Default to `'{{ ls_host }}'`
 ### https://docs.ansible.com/ansible/latest/openssl_certificate_module.html
-- `logstash_ssl_certificate_provider`:
+- `ls_ssl_certificate_provider`:
 Certificater provuider (to create certificate if not exists). Default to `selfsigned`
 
-- `logstash_dir`:
-Logstash directory. Default to `/usr/share/logstash`
-- `logstash_plugin_bin`:
-Logstash plugin utility. Default to `'{{ logstash_dir }}/bin/logstash-plugin'`
-- `logstash_plugins`:
+- `ls_plugin_bin`:
+Logstash plugin utility. Default to `'{{ ls_dir }}/bin/logstash-plugin'`
+- `ls_plugins`:
 Plugins list to install to Logstash. Default to `[logstash-input-beats]`
 
-- `logstash_add_custom_filters`:
+- `ls_add_custom_filters`:
 Add custom filter files. Default to `True`
-- `logstash_local_custom_filters`:
+- `ls_local_custom_filters`:
 If True - get files from ansible host. Otherwise get from remote host folder. Default to `True`
-- `logstash_custom_filters_path`:
+- `ls_custom_filters_path`:
 Custom filters folder. Default to `'{{ role_path }}/files/filters'`
-- `logstash_custom_filters_files`:
+- `ls_custom_filters_files`:
 Custom filter files to use. Default to `[25-nginx.conf,26-apache.conf,27-solr.conf]`
 
-- `logstash_add_custom_grok_patterns`:
+- `ls_add_custom_grok_patterns`:
 Add custom grok patterns. Default to `True`
-- `logstash_custom_grok_patterns_files`:
+- `ls_custom_grok_patterns_files`:
 List of custom grok patterns. Default to `[grok_patterns.custom]`
 
-- `logstash_limits_set`:
+- `ls_limits_set`:
 To set OS limits. Default to `True`
-- `logstash_limits_nofile`:
+- `ls_limits_nofile`:
 Set maximum number of open files. Default to `204800`
-- `logstash_limits_stack`:
+- `ls_limits_stack`:
 Set maximum stack size. Default to `4096`
-- `logstash_limits_nproc`:
+- `ls_limits_nproc`:
 Set maximum number of processes. Default to `24576`
 
-- `logstash_service_autostart`:
+- `ls_service_name`:
+Logstash service name: Default to `logstash`
+- `ls_service_autostart`:
 Add Logstash service to automatically start. Default to `True`
-- `logstash_service_start`:
+- `ls_service_start`:
 To start Logstash service after configuration. Default to `True`
 
 - `elasticsearch_index_name`:
@@ -130,6 +150,17 @@ Example Playbook
   roles:
     - role: lean_delivery.java
     - role: lean_delivery.logstash
+  vars:
+    elastic_branch: 6
+    ls_config:
+      dead_letter_queue.enable: false
+      path.dead_letter_queue: "/opt/dead-queue"
+      pipeline.workers: 4
+      pipeline.output.workers: 1
+      queue.type: persisted
+      queue.page_capacity: 100mb
+      queue.max_bytes: 10gb
+      path.queue: "/opt/logstash-queue"
 ```
 
 License

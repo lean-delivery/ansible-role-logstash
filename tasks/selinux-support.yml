@@ -12,7 +12,7 @@
 
 - name: Enable connections to HTTP port
   seport:
-    ports: '{{ logstash_port }}'
+    ports: '{{ ls_port }}'
     proto: tcp
     setype: http_port_t
     state: present

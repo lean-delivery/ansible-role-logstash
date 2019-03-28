@@ -1,59 +1,132 @@
 ---
-- name: Create custom patterns directory
-  file:
-    path: '{{ logstash_dir }}/custom_patterns'
-    state: directory
-    mode: 0755
-  become: True
+- name: Check default home path
+  stat:
+    path: '{{ default["ls_home"] }}'
+  register: default_home
 
-- name: Install custom grok patterns
-  copy:
-    src: '{{ role_path }}/files/{{ grok_pattern }}'
-    dest: '{{ logstash_dir }}/custom_patterns/{{ grok_pattern }}'
-    owner: root
-    group: root
-    mode: 0644
-  loop: '{{ logstash_custom_grok_patterns_files }}'
-  loop_control:
-    loop_var: grok_pattern
-  become: True
+- name: Move home path if redefined
+  block:
 
-- name: Install Logstash configs
-  template:
-    src: '{{ logstash_config }}.j2'
-    dest: '/etc/logstash/conf.d/{{ logstash_config }}'
-    owner: root
-    group: root
-    mode: 0644
-  loop:
-    - 20-filebeat-input.conf
-    - 75-elasticsearch-output.conf
-  loop_control:
-    loop_var: logstash_config
-  become: True
+    - name: Copy home to new destination
+      synchronize:
+        src: '{{ default["ls_home"] }}/'
+        dest: '{{ ls_home }}/'
+        recursive: True
+      delegate_to: '{{ inventory_hostname }}'
 
-- name: Install logstash plugins
-  command: '{{ logstash_plugin_bin }} install {{ plugin }}'
-  args:
-    removes: '{{ logstash_plugin_bin }}'
-  loop: '{{ logstash_plugins }}'
-  loop_control:
-    loop_var: plugin
-  changed_when: False
-  become: True
+    - name: Remove old destination
+      file:
+        path: '{{ default["ls_home"] }}'
+        state: absent
 
-- name: Install Logstash custom filters
-  copy:
-    src: '{{ logstash_custom_filters_path }}/{{ logstash_filter }}'
-    dest: '/etc/logstash/conf.d/{{ logstash_filter }}'
-    owner: root
-    group: root
-    mode: 0644
-    remote_src: '{{ not logstash_local_custom_filters }}'
-  loop: '{{ logstash_custom_filters_files }}'
-  loop_control:
-    loop_var: logstash_filter
-  when: logstash_add_custom_filters
+  become: True
+  when:
+    - ls_home != default['ls_home']
+    - default_home.stat.exists
+
+- block:
+
+    - name: Remove default redefined paths
+      file:
+        path: '{{ default[ls_path_item] }}'
+        state: absent
+      when: lookup('vars', ls_path_item) != default[ls_path_item]
+      loop:
+        - ls_conf_dir
+        - ls_log_dir
+        - ls_pid_dir
+        - ls_data_dir
+      loop_control:
+        loop_var: ls_path_item
+
+    - name: Create paths if absent
+      file:
+        path: '{{ default[ls_path_item] }}'
+        state: directory
+        owner: '{{ ls_user }}'
+        group: '{{ ls_group }}'
+      loop:
+        - ls_conf_dir
+        - ls_log_dir
+        - ls_pid_dir
+        - ls_data_dir
+      loop_control:
+        loop_var: ls_path_item
+
+    - name: Create custom patterns directory
+      file:
+        path: '{{ ls_home }}/custom_patterns'
+        state: directory
+        mode: 0755
+
+    - name: Copy Configuration Files
+      template:
+        src: '{{ ls_config_item }}.j2'
+        dest: '{{ ls_conf_dir }}/{{ ls_config_item }}'
+        owner: '{{ ls_user }}'
+        group: '{{ ls_group }}'
+        mode: 0644
+        force: True
+      loop:
+        - logstash.yml
+        - jvm.options
+        - startup.options
+      loop_control:
+        loop_var: ls_config_item
+
+    - name: Copy Default File for Instance
+      template:
+        src: default/logstash.j2
+        dest: '{{ ls_default_file }}'
+        mode: 0644
+        force: True
+
+    - name: Install custom grok patterns
+      copy:
+        src: '{{ role_path }}/files/{{ grok_pattern }}'
+        dest: '{{ ls_home }}/custom_patterns/{{ grok_pattern }}'
+        owner: root
+        group: root
+        mode: 0644
+      loop: '{{ ls_custom_grok_patterns_files }}'
+      loop_control:
+        loop_var: grok_pattern
+
+    - name: Install Logstash configs
+      template:
+        src: 'conf.d/{{ ls_filter_config }}.j2'
+        dest: '{{ ls_conf_dir }}/conf.d/{{ ls_filter_config }}'
+        owner: root
+        group: root
+        mode: 0644
+      loop:
+        - 20-filebeat-input.conf
+        - 75-elasticsearch-output.conf
+      loop_control:
+        loop_var: ls_filter_config
+
+    - name: Install logstash plugins
+      command: '{{ ls_plugin_bin }} install {{ plugin }}'
+      args:
+        removes: '{{ ls_plugin_bin }}'
+      loop: '{{ ls_plugins }}'
+      loop_control:
+        loop_var: plugin
+      changed_when: False
+
+    - name: Install Logstash custom filters
+      copy:
+        src: '{{ ls_custom_filters_path }}/{{ ls_filter }}'
+        dest: '{{ ls_conf_dir }}/conf.d/{{ ls_filter }}'
+        owner: root
+        group: root
+        mode: 0644
+        remote_src: '{{ not ls_local_custom_filters }}'
+      loop: '{{ ls_custom_filters_files }}'
+      loop_control:
+        loop_var: ls_filter
+      when: ls_add_custom_filters
+
   become: True
 
 - block:
@@ -63,7 +136,7 @@
       limit_type: '{{ item }}'
       limit_item: nofile
       use_max: True
-      value: '{{ logstash_limits_nofile | int }}'
+      value: '{{ ls_limits_nofile | int }}'
     loop:
       - soft
       - hard
@@ -74,7 +147,7 @@
       limit_type: '{{ item }}'
       limit_item: stack
       use_max: True
-      value: '{{ logstash_limits_stack | int }}'
+      value: '{{ ls_limits_stack | int }}'
     loop:
       - soft
       - hard
@@ -85,9 +158,9 @@
       limit_type: '{{ item }}'
       limit_item: nproc
       use_max: True
-      value: '{{ logstash_limits_nproc | int }}'
+      value: '{{ ls_limits_nproc | int }}'
     loop:
       - soft
       - hard
   become: True
-  when: logstash_limits_set
+  when: ls_limits_set

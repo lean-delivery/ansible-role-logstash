@@ -3,50 +3,60 @@
 elastic_branch: 6
 es_major_version: '{{ elastic_branch }}.x'
 
-logstash_host: '{{ ansible_fqdn }}'
-logstash_port: 5555
+ls_host: '{{ ansible_fqdn }}'
+ls_port: 5555
+ls_xms: 1g
+ls_xmx: 1g
+
+ls_config: []
+ls_home: '{{ default["ls_home"] }}'
+ls_pid_file: '{{ default["ls_pid_file"] }}'
+ls_log_dir: '{{ default["ls_log_dir"] }}'
+ls_conf_dir: '{{ default["ls_conf_dir"] }}'
+ls_data_dir: '{{ default["ls_data_dir"] }}'
+ls_nice_level: '{{ default["ls_nice_level"] }}'
 
 elasticsearch_host: elasticsearch.example.com
 elasticsearch_port: 9200
 
 #SSL certificate
-logstash_enable_ssl: True
-logstash_ssl_key_file_name: '{{ logstash_host }}.key.pem'
-logstash_ssl_cert_file_name: '{{ logstash_host }}.cert.pem'
-logstash_local_certs: True
-logstash_local_key_path: '{{ role_path }}/files/{{ logstash_ssl_key_file_name }}'
-logstash_local_cert_path: '{{ role_path }}/files/{{ logstash_ssl_cert_file_name }}'
-logstash_key_path: '{{ (ansible_os_family == "Debian") | ternary("/etc/ssl/private","/etc/pki/tls/private") }}'
-logstash_cert_path: '{{ (ansible_os_family == "Debian") | ternary("/etc/ssl/certs","/etc/pki/tls/certs") }}'
-logstash_ssl_key_size: 4096
-logstash_ca_domain: '{{ logstash_host }}'
+ls_enable_ssl: True
+ls_ssl_key_file_name: '{{ ls_host }}.key.pem'
+ls_ssl_cert_file_name: '{{ ls_host }}.cert.pem'
+ls_local_certs: True
+ls_local_key_path: '{{ role_path }}/files/{{ ls_ssl_key_file_name }}'
+ls_local_cert_path: '{{ role_path }}/files/{{ ls_ssl_cert_file_name }}'
+ls_key_path: '{{ (ansible_os_family == "Debian") | ternary("/etc/ssl/private","/etc/pki/tls/private") }}'
+ls_cert_path: '{{ (ansible_os_family == "Debian") | ternary("/etc/ssl/certs","/etc/pki/tls/certs") }}'
+ls_ssl_key_size: 4096
+ls_ca_domain: '{{ ls_host }}'
 # https://docs.ansible.com/ansible/latest/openssl_certificate_module.html
-logstash_ssl_certificate_provider: selfsigned
+ls_ssl_certificate_provider: selfsigned
 
-logstash_dir: /usr/share/logstash
-logstash_plugin_bin: '{{ logstash_dir }}/bin/logstash-plugin'
-logstash_plugins:
+ls_plugin_bin: '{{ ls_home }}/bin/logstash-plugin'
+ls_plugins:
   - logstash-input-beats
 
-logstash_add_custom_filters: True
-logstash_local_custom_filters: True
-logstash_custom_filters_path: '{{ role_path }}/files/filters'
-logstash_custom_filters_files:
+ls_add_custom_filters: True
+ls_local_custom_filters: True
+ls_custom_filters_path: '{{ role_path }}/files/filters'
+ls_custom_filters_files:
   - 25-nginx.conf
   - 26-apache.conf
   - 27-solr.conf
 
-logstash_add_custom_grok_patterns: True
-logstash_custom_grok_patterns_files:
+ls_add_custom_grok_patterns: True
+ls_custom_grok_patterns_files:
   - grok_patterns.custom
 
-logstash_limits_set: True
-logstash_limits_nofile: 204800
-logstash_limits_stack: 4096
-logstash_limits_nproc: 24576
+ls_limits_set: True
+ls_limits_nofile: 204800
+ls_limits_stack: 4096
+ls_limits_nproc: 24576
 
-logstash_service_autostart: True
-logstash_service_start: True
+ls_service_name: logstash
+ls_service_autostart: True
+ls_service_start: True
 
 elasticsearch_index_name: '%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}'
 

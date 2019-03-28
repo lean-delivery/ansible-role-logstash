@@ -10,3 +10,4 @@ requirements:
   - unzip
   - lsof
   - libselinux-python
+ls_default_file: /etc/sysconfig/logstash

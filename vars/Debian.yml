@@ -7,3 +7,4 @@ requirements:
   - python
   - unzip
   - lsof
+ls_default_file: /etc/default/logstash

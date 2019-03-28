@@ -1,3 +1,12 @@
 ---
 # vars file for logstash
 es_repo_name: '{{ es_use_oss_version | ternary("oss-" + es_major_version, es_major_version) }}'
+ls_user: logstash
+ls_group: logstash
+default:
+  ls_home: /usr/share/logstash
+  ls_pid_file: /var/run/logstash.pid
+  ls_log_dir: /var/log/logstash
+  ls_conf_dir: /etc/logstash
+  ls_data_dir: /var/lib/logstash
+  ls_nice_level: 19
