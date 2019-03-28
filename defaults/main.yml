@@ -26,8 +26,8 @@ ls_ssl_cert_file_name: '{{ ls_host }}.cert.pem'
 ls_local_certs: True
 ls_local_key_path: '{{ role_path }}/files/{{ ls_ssl_key_file_name }}'
 ls_local_cert_path: '{{ role_path }}/files/{{ ls_ssl_cert_file_name }}'
-ls_key_path: '{{ (ansible_os_family == "Debian") | ternary("/etc/ssl/private","/etc/pki/tls/private") }}'
-ls_cert_path: '{{ (ansible_os_family == "Debian") | ternary("/etc/ssl/certs","/etc/pki/tls/certs") }}'
+ls_key_path: '{{ ls_key_default_path }}'
+ls_cert_path: '{{ ls_cert_default_path }}'
 ls_ssl_key_size: 4096
 ls_ca_domain: '{{ ls_host }}'
 # https://docs.ansible.com/ansible/latest/openssl_certificate_module.html

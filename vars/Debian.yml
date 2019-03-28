@@ -8,3 +8,5 @@ requirements:
   - unzip
   - lsof
 ls_default_file: /etc/default/logstash
+ls_key_default_path: /etc/ssl/private
+ls_cert_default_path: /etc/ssl/certs

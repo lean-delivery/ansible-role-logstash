@@ -11,3 +11,5 @@ requirements:
   - lsof
   - libselinux-python
 ls_default_file: /etc/sysconfig/logstash
+ls_key_default_path: /etc/pki/tls/private
+ls_cert_default_path: /etc/pki/tls/certs
