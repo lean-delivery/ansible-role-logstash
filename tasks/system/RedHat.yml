@@ -4,8 +4,8 @@
     yum:
       name: 'https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm'
       state: present
-    register: installed_packages
-    until: installed_packages is succeeded
+    register: package_install
+    until: package_install is succeeded
 
   - name: Importing latest logstash GPG Key
     rpm_key:

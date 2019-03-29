@@ -54,8 +54,8 @@
           - pyOpenSSL
         state: present
         extra_args: --upgrade
-      register: installed_packages
-      until: installed_packages is succeeded
+      register: package_install
+      until: package_install is succeeded
 
     - name: Create private certificate
       openssl_privatekey:

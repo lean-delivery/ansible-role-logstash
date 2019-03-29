@@ -40,7 +40,7 @@
 
     - name: Create paths if absent
       file:
-        path: '{{ default[ls_path_item] }}'
+        path: '{{ lookup('vars', ls_path_item) }}'
         state: directory
         owner: '{{ ls_user }}'
         group: '{{ ls_group }}'
@@ -83,8 +83,8 @@
       copy:
         src: '{{ role_path }}/files/{{ grok_pattern }}'
         dest: '{{ ls_home }}/custom_patterns/{{ grok_pattern }}'
-        owner: root
-        group: root
+        owner: '{{ ls_user }}'
+        group: '{{ ls_group }}'
         mode: 0644
       loop: '{{ ls_custom_grok_patterns_files }}'
       loop_control:
@@ -92,32 +92,30 @@
 
     - name: Install Logstash configs
       template:
-        src: 'conf.d/{{ ls_filter_config }}.j2'
-        dest: '{{ ls_conf_dir }}/conf.d/{{ ls_filter_config }}'
-        owner: root
-        group: root
+        src: '{{ ls_filter_config }}'
+        dest: '{{ ls_conf_dir }}/conf.d/{{ ls_filter_config | basename | regex_replace('\.j2','') }}'
+        owner: '{{ ls_user }}'
+        group: '{{ ls_group }}'
         mode: 0644
-      loop:
-        - 20-filebeat-input.conf
-        - 75-elasticsearch-output.conf
+      with_fileglob:
+        - '{{ role_path }}/templates/conf.d/*.j2'
       loop_control:
         loop_var: ls_filter_config
 
     - name: Install logstash plugins
       command: '{{ ls_plugin_bin }} install {{ plugin }}'
-      args:
-        removes: '{{ ls_plugin_bin }}'
       loop: '{{ ls_plugins }}'
       loop_control:
         loop_var: plugin
-      changed_when: False
+      register: install_result
+      changed_when: "'Installation successful' in install_result.stdout"
 
     - name: Install Logstash custom filters
       copy:
         src: '{{ ls_custom_filters_path }}/{{ ls_filter }}'
         dest: '{{ ls_conf_dir }}/conf.d/{{ ls_filter }}'
-        owner: root
-        group: root
+        owner: '{{ ls_user }}'
+        group: '{{ ls_group }}'
         mode: 0644
         remote_src: '{{ not ls_local_custom_filters }}'
       loop: '{{ ls_custom_filters_files }}'
@@ -128,37 +126,39 @@
   become: True
 
 - block:
-  - name: Set nofile limit
-    pam_limits:
-      domain: '*'
-      limit_type: '{{ item }}'
-      limit_item: nofile
-      use_max: True
-      value: '{{ ls_limits_nofile | int }}'
-    loop:
-      - soft
-      - hard
 
-  - name: Set stack limit
-    pam_limits:
-      domain: '*'
-      limit_type: '{{ item }}'
-      limit_item: stack
-      use_max: True
-      value: '{{ ls_limits_stack | int }}'
-    loop:
-      - soft
-      - hard
+    - name: Set nofile limit
+      pam_limits:
+        domain: '*'
+        limit_type: '{{ item }}'
+        limit_item: nofile
+        use_max: True
+        value: '{{ ls_limits_nofile | int }}'
+      loop:
+        - soft
+        - hard
 
-  - name: Set nproc limit
-    pam_limits:
-      domain: '*'
-      limit_type: '{{ item }}'
-      limit_item: nproc
-      use_max: True
-      value: '{{ ls_limits_nproc | int }}'
-    loop:
-      - soft
-      - hard
+    - name: Set stack limit
+      pam_limits:
+        domain: '*'
+        limit_type: '{{ item }}'
+        limit_item: stack
+        use_max: True
+        value: '{{ ls_limits_stack | int }}'
+      loop:
+        - soft
+        - hard
+
+    - name: Set nproc limit
+      pam_limits:
+        domain: '*'
+        limit_type: '{{ item }}'
+        limit_item: nproc
+        use_max: True
+        value: '{{ ls_limits_nproc | int }}'
+      loop:
+        - soft
+        - hard
+
   become: True
   when: ls_limits_set

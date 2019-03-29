@@ -3,12 +3,8 @@ requirements:
   - openssl
   - python-devel
   - openssl-devel
-  - openssh-clients
   - python2-pip
   - net-tools
-  - python
-  - unzip
-  - lsof
   - libselinux-python
 ls_default_file: /etc/sysconfig/logstash
 ls_key_default_path: /etc/pki/tls/private
