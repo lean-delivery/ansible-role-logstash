@@ -40,7 +40,7 @@
 
     - name: Create paths if absent
       file:
-        path: '{{ lookup('vars', ls_path_item) }}'
+        path: '{{ lookup("vars", ls_path_item) }}'
         state: directory
         owner: '{{ ls_user }}'
         group: '{{ ls_group }}'
