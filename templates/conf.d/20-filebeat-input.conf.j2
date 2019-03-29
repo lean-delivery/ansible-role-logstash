@@ -1,0 +1,11 @@
+input {
+      beats {
+            port => {{ ls_port }}
+            {% if ls_enable_ssl %}
+            ssl => true
+            ssl_certificate => "{{ ls_cert_path }}/{{ ls_ssl_cert_file_name }}"
+            ssl_key => "{{ ls_key_path }}/{{ ls_ssl_key_file_name }}"
+            {% endif %}
+            codec => "plain"
+      }
+}

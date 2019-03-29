@@ -1,0 +1,8 @@
+output {
+        elasticsearch {
+                action => "index"
+                hosts => "{{ elasticsearch_host }}:{{ elasticsearch_port }}"
+                codec => "plain"
+                index => "{{ elasticsearch_index_name }}"
+        }
+}
