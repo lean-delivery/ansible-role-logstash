@@ -103,7 +103,9 @@
         loop_var: ls_filter_config
 
     - name: Install logstash plugins
-      command: '{{ ls_plugin_bin }} install {{ plugin }}'
+      shell: >-
+        '{{ ls_plugin_bin }} list {{ plugin }}'
+        || '{{ ls_plugin_bin }} install {{ plugin }}'
       loop: '{{ ls_plugins }}'
       loop_control:
         loop_var: plugin
