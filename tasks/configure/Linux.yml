@@ -92,7 +92,7 @@
 
     - name: Install Logstash configs
       template:
-        src: '{{ ls_filter_config | basename | regex_replace("\.j2","") }}.j2'
+        src: 'conf.d/{{ ls_filter_config | basename | regex_replace("\.j2","") }}.j2'
         dest: '{{ ls_conf_dir }}/conf.d/{{ ls_filter_config | basename | regex_replace("\.j2","") }}'
         owner: '{{ ls_user }}'
         group: '{{ ls_group }}'
