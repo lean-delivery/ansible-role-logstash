@@ -104,8 +104,8 @@
 
     - name: Install logstash plugins
       shell: >-
-        '{{ ls_plugin_bin }} list {{ plugin }}'
-        || '{{ ls_plugin_bin }} install {{ plugin }}'
+        {{ ls_plugin_bin }} list {{ plugin }}
+        || {{ ls_plugin_bin }} install {{ plugin }}
       loop: '{{ ls_plugins }}'
       loop_control:
         loop_var: plugin
