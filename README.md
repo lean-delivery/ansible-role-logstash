@@ -4,8 +4,8 @@ logstash role
 [![Build Status](https://travis-ci.org/lean-delivery/ansible-role-logstash.svg?branch=master)](https://travis-ci.org/lean-delivery/ansible-role-logstash)
 [![Build Status](https://gitlab.com/lean-delivery/ansible-role-logstash/badges/master/build.svg)](https://gitlab.com/lean-delivery/ansible-role-logstash/pipelines)
 [![Galaxy](https://img.shields.io/badge/galaxy-lean__delivery.logstash-blue.svg)](https://galaxy.ansible.com/lean_delivery/logstash)
-![Ansible](https://img.shields.io/ansible/role/d/role_id.svg)
-![Ansible](https://img.shields.io/badge/dynamic/json.svg?label=min_ansible_version&url=https%3A%2F%2Fgalaxy.ansible.com%2Fapi%2Fv1%2Froles%2Frole_id%2F&query=$.min_ansible_version)
+![Ansible](https://img.shields.io/ansible/role/d/39169.svg)
+![Ansible](https://img.shields.io/badge/dynamic/json.svg?label=min_ansible_version&url=https%3A%2F%2Fgalaxy.ansible.com%2Fapi%2Fv1%2Froles%2F39169%2F&query=$.min_ansible_version)
 
 This role:
   - Installs Logstash server
