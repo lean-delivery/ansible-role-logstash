@@ -1,5 +1,5 @@
 
-{% if ls_config is defined %}
+{% if ls_config | length %}
 {{ ls_config | to_nice_yaml }}
 {% endif %}
 
