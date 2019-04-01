@@ -3,6 +3,7 @@
 elastic_branch: 6
 es_major_version: '{{ elastic_branch }}.x'
 
+ls_config: []
 ls_host: '{{ ansible_fqdn }}'
 ls_port: 5555
 ls_xms: 1g
