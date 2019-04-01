@@ -8,7 +8,6 @@ ls_port: 5555
 ls_xms: 1g
 ls_xmx: 1g
 
-ls_config: []
 ls_home: '{{ default["ls_home"] }}'
 ls_pid_file: '{{ default["ls_pid_file"] }}'
 ls_log_dir: '{{ default["ls_log_dir"] }}'

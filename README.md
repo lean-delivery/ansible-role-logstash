@@ -41,7 +41,7 @@ Maximum size of total heap space. Default to `1g`
 
 - `ls_config`:
 All Logstash configuration parameters are supported. This is achieved using a configuration map parameter `ls_config` which is serialized into the logstash.yml file.
-The use of a map ensures the Ansible playbook does not need to be updated to reflect new/deprecated/plugin configuration parameters. Default to `[]`
+The use of a map ensures the Ansible playbook does not need to be updated to reflect new/deprecated/plugin configuration parameters. Default is not defined
 - `ls_home`:
 Path to logstash home directory. Default to `/usr/share/logstash`
 - `ls_pid_file`:
