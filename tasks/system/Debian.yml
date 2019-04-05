@@ -28,4 +28,6 @@
       force: False
     register: installed_package
     until: installed_package is succeeded
+    environment:
+      LS_JAVA_OPTS: '{{ ls_java_opts }}'
   become: True
