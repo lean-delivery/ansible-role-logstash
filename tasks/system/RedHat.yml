@@ -32,7 +32,9 @@
       update_cache: True
     register: installed_package
     until: installed_package is succeeded
+    environment:
+      LS_JAVA_OPTS: '{{ ls_java_opts }}'
   become: True
 
 - name: Checking selinux support
-  include_tasks: selinux-support.yml
+  include_tasks: ../selinux-support.yml
