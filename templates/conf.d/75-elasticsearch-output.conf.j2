@@ -4,5 +4,19 @@ output {
                 hosts => "{{ elasticsearch_host }}:{{ elasticsearch_port }}"
                 codec => "plain"
                 index => "{{ elasticsearch_index_name }}"
+                {% if ls_es_secure and ls_enable_keystore %}
+
+                 user => ${ES_USER}
+                 password => ${ES_PASS}
+                {% elif ls_es_secure  %}
+
+                 user => {{ ls_es_user }}
+                 password => {{ ls_es_pass }}
+                {% endif %}
+                {% if es_ssl %}
+
+                 ssl => true
+                 cacert => "{{ ls_cert_path }}/{{ es_ssl_cacert_file_name }}"
+                {% endif %}
         }
 }

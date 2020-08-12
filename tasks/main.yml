@@ -33,6 +33,10 @@
 - name: Logstash configuration
   include_tasks: 'configure/{{ ansible_system }}.yml'
 
+- name: Keystore create and add secrets
+  include_tasks: 'keystore/{{ ansible_system }}.yml'
+  when:
+    - ls_enable_keystore
 - name: Logstash service
   service:
     name: '{{ ls_service_name }}'

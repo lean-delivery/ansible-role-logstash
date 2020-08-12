@@ -80,3 +80,22 @@
     - not key_file.stat.exists
     - not cert_file.stat.exists
   become: True
+
+#Elasticsearch Local SSL cacert pem file.
+- name: Check if Elasticsearch local cacert exists
+  stat:
+    path: '{{ es_local_ssl_cacert }}'
+  delegate_to: '{{ ls_local_certs | ternary("localhost", inventory_hostname) }}'
+  register: es_cacert_file
+  when: ls_local_certs
+
+- name: Upload Elasticsearch local cacert file
+  copy:
+    src: '{{ es_local_ssl_cacert }}'
+    dest: '{{ ls_cert_path }}'
+    owner: root
+    group: root
+    mode: 0644
+#    remote_src: '{{ not ls_local_certs }}'
+  become: True
+  when: es_cacert_file.stat.exists

@@ -15,11 +15,11 @@ ls_log_dir: '{{ default["ls_log_dir"] }}'
 ls_conf_dir: '{{ default["ls_conf_dir"] }}'
 ls_data_dir: '{{ default["ls_data_dir"] }}'
 ls_nice_level: '{{ default["ls_nice_level"] }}'
-
+ls_keystore_pass: ''
 elasticsearch_host: elasticsearch.example.com
 elasticsearch_port: 9200
 
-#SSL certificate
+#SSL certificate for Beats input.
 ls_enable_ssl: True
 ls_ssl_key_file_name: '{{ ls_host }}.key.pem'
 ls_ssl_cert_file_name: '{{ ls_host }}.cert.pem'
@@ -32,6 +32,18 @@ ls_ssl_key_size: 4096
 ls_ca_domain: '{{ ls_host }}'
 # https://docs.ansible.com/ansible/latest/openssl_certificate_module.html
 ls_ssl_certificate_provider: selfsigned
+ls_ssl_verify_mode: none
+ls_ssl_key_passphrase: ''
+
+ls_enable_keystore: False
+#Elasticsearch Credentials
+ls_es_secure: False
+ls_es_user: ''
+ls_es_pass: ''
+#Elasticsearch TLS encryption
+es_ssl: False
+es_ssl_cacert_file_name: cert.pem
+es_local_ssl_cacert: '{{ role_path }}/files/{{es_ssl_cacert_file_name}}'
 
 ls_plugin_bin: '{{ ls_home }}/bin/logstash-plugin'
 ls_plugins:
