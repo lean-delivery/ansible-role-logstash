@@ -20,10 +20,13 @@
       state: present
       update_cache: True
       filename: '{{ es_repo_file }}.list'
+    when: es_use_repository | bool
 
   - name: Debian - Installing Logstash package
     apt:
-      name: logstash
+      name: >
+        {% if logstash_custom_package_url is defined %}{{ logstash_custom_package_url }}
+        {% else %} logstash-{{ es_version }}{% endif %}
       state: present
       force: False
     register: installed_package

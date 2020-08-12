@@ -1,4 +1,4 @@
-# SSL Certificates and Keystores for the Beats Input and Elasticsearch communication
+# SSL Certificates and Keystores for the Beats input and Elasticsearch communication
 
 [Beats Imnput plugin Settings](https://www.elastic.co/guide/en/logstash/current/plugins-inputs-beats.html)
 
@@ -7,22 +7,39 @@
 To enable logstash keystore set the variable:
 `ls_enable_keystore: True`
 
-Keystore Password is set via `ls_keystore_pass: yourLSpassword` . Set to non-empty string.
+Keystore Password set via `ls_keystore_pass: yourLSpassword` . Use non-empty string.
 
 ### Logstash Elasticsearch Security and TLS encryption
 [Logstash ES Output Security](https://www.elastic.co/guide/en/logstash/current/ls-security.html)
 
-We do not generate Elastic
- ```shell script
+We upload the local elasticsearch `.pem` Certificate Authority’s certificate 
+ ```yaml
     ls_es_secure: True
     ls_es_user: elastic
     ls_es_pass: changeme
     es_ssl: True
-    es_ssl_cacert_file_name:
+    es_ssl_cacert_file_name: cert.pem
     es_ssl_cacert: "files/certs/client/cert.pem"
 ```
-### Example Configuration file with all settings enabled
+
+## Instalaton settings
+
+### Install specific minro version from a custom  package url
+ ```yaml
+elastic_branch: 7
+es_version: 7.6.2                                                                                                             
+````
+### Install from local source
+You can disable the use of the repository with  `es_use_repository: False`
+And set the custom location from which to install logstash.
+```yaml
+es_use_repository: False
+logstash_custom_package_url: /local/path/logstash-7.8.1.rpm
 ```
+    
+    
+### Example Configuration file with all settings enabled
+```yaml
 - name: Install and Configure Logstash
   hosts: logstash-node
   vars:
@@ -37,6 +54,9 @@ We do not generate Elastic
     ls_enable_keystore: True
     ls_keystore_pass: somePAssword
     elastic_branch: 7
+    es_version: 7.6.2
+    es_use_repository: False
+    logstash_custom_package_url: /opt/logs/logstash-7.6.2.rpm
     ls_xms: 128M
     ls_xmx: 128M
     ls_local_certs: True

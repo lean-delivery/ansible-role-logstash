@@ -24,10 +24,13 @@
       gpgkey: '{{ elastic_gpg_key }}'
       enabled: True
       state: present
+    when: es_use_repository | bool
 
   - name: Redhat - Installing Logstash package
     yum:
-      name: logstash
+      name: >
+        {% if logstash_custom_package_url is defined %}{{ logstash_custom_package_url }}
+        {% else %} logstash-{{ es_version }}{% endif %}
       state: present
       update_cache: True
     register: installed_package
