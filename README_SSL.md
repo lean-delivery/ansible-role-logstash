@@ -1,4 +1,4 @@
-#SSL Certificates and Keystores for the Beats Input and Elasticsearch communication
+# SSL Certificates and Keystores for the Beats Input and Elasticsearch communication
 
 [Beats Imnput plugin Settings](https://www.elastic.co/guide/en/logstash/current/plugins-inputs-beats.html)
 
@@ -9,7 +9,7 @@ To enable logstash keystore set the variable:
 
 Keystore Password is set via `ls_keystore_pass: yourLSpassword` . Set to non-empty string.
 
-###Logstash Elasticsearch Security and TLS encryption
+### Logstash Elasticsearch Security and TLS encryption
 [Logstash ES Output Security](https://www.elastic.co/guide/en/logstash/current/ls-security.html)
 
 We do not generate Elastic
@@ -21,7 +21,7 @@ We do not generate Elastic
     es_ssl_cacert_file_name:
     es_ssl_cacert: "files/certs/client/cert.pem"
 ```
-###Example Configuration file with all settings enabled
+### Example Configuration file with all settings enabled
 ```
 - name: Install and Configure Logstash
   hosts: logstash-node
@@ -60,7 +60,7 @@ We do not generate Elastic
 
 
 
-###Debug Keystore
+### Debug Keystore
 ```shell script
 export LOGSTASH_KEYSTORE_PASS=mypassword
 /usr/share/logstash/bin/logstash-keystore list
