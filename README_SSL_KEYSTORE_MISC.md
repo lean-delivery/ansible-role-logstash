@@ -35,10 +35,10 @@ Encrypted communication with elasticsearch can be achieved with the either
     es_truststore_filename: cert.pfx
     es_local_truststore: "files/certs/client/cert.pfx"
     es_truststore_pass: elastic
-
+```
 ## Instalaton settings
 
-### Install specific minro version from a custom  package url
+### Install specific version from a custom  package url
  ```yaml
 elastic_branch: 7
 es_version: 7.6.2                                                                                                             
@@ -67,7 +67,7 @@ logstash_custom_package_url: /local/path/logstash-7.8.1.rpm
       #java_major_version: 8
   vars:
     ls_enable_keystore: True
-    ls_keystore_pass: somePAssword
+    ls_keystore_pass: mypassword
     elastic_branch: 7
     es_version: 7.6.2
     ls_xms: 1g
