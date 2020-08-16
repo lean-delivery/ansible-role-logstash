@@ -87,7 +87,7 @@
     path: '{{ es_local_ssl_cacert }}'
   delegate_to: '{{ ls_local_certs | ternary("localhost", inventory_hostname) }}'
   register: es_cacert_file
-  when: ls_local_certs
+  when: ls_local_certs and es_ssl
 
 - name: Upload Elasticsearch local cacert file
   copy:
@@ -98,4 +98,34 @@
     mode: 0644
 #    remote_src: '{{ not ls_local_certs }}'
   become: True
-  when: es_cacert_file.stat.exists
+  when: ls_local_certs and es_ssl
+
+#Elasticsearch Local ES Keystore And trustore files
+- name: Check if Elasticsearch local cacert exists
+  stat:
+    path: '{{ es_local_ssl_cacert }}'
+  delegate_to: '{{ ls_local_certs | ternary("localhost", inventory_hostname) }}'
+  register: es_keystore_file
+  when: ls_local_certs and es_pki
+
+- name: Upload Elasticsearch local keystore file
+  copy:
+    src: '{{ es_local_keystore }}'
+    dest: '{{ ls_cert_path }}'
+    owner: root
+    group: root
+    mode: 0644
+  #    remote_src: '{{ not ls_local_certs }}'
+  become: True
+  when: ls_local_certs and es_pki and es_local_keystore
+
+- name: Upload Elasticsearch local truststore file
+  copy:
+    src: '{{ es_local_truststore }}'
+    dest: '{{ ls_cert_path }}'
+    owner: root
+    group: root
+    mode: 0644
+  #    remote_src: '{{ not ls_local_certs }}'
+  become: True
+  when: ls_local_certs and es_pki and es_local_truststore

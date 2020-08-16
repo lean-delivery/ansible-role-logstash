@@ -1,6 +1,6 @@
 # SSL Certificates and Keystores for the Beats input and Elasticsearch communication
 
-[Beats Imnput plugin Settings](https://www.elastic.co/guide/en/logstash/current/plugins-inputs-beats.html)
+[Beats Input plugin Settings](https://www.elastic.co/guide/en/logstash/current/plugins-inputs-beats.html)
 
 [Logstash Keystore Password](https://www.elastic.co/guide/en/logstash/current/keystore.html#keystore-password)
 
@@ -17,10 +17,24 @@ We upload the local elasticsearch `.pem` Certificate Authority’s certificate
     ls_es_secure: True
     ls_es_user: elastic
     ls_es_pass: changeme
+```
+Encrypted communication with elasticsearch can be achieved with the either  
+`es_pki: True` or `  es_ssl: True`
+
+```yaml
     es_ssl: True
     es_ssl_cacert_file_name: cert.pem
     es_ssl_cacert: "files/certs/client/cert.pem"
 ```
+
+```yaml
+    es_pki: True
+    es_keystore_filename: cert.pfx
+    es_local_keystore: "files/certs/client/cert.pfx"
+    es_keystore_pass: elastic
+    es_truststore_filename: cert.pfx
+    es_local_truststore: "files/certs/client/cert.pfx"
+    es_truststore_pass: elastic
 
 ## Instalaton settings
 
@@ -45,20 +59,25 @@ logstash_custom_package_url: /local/path/logstash-7.8.1.rpm
   vars:
     solr_change_default_password: False
   roles:
-          #    - role: lean_delivery.logstash
-    - role: logstash
+ 
     - role: lean_delivery.java
-      transport: repositories
-      java_major_version: 8
+    - role: logstash
+#    - role: lean_delivery.logstash
+      #transport: repositories
+      #java_major_version: 8
   vars:
     ls_enable_keystore: True
     ls_keystore_pass: somePAssword
     elastic_branch: 7
     es_version: 7.6.2
-    es_use_repository: False
-    logstash_custom_package_url: /opt/logs/logstash-7.6.2.rpm
-    ls_xms: 128M
-    ls_xmx: 128M
+    ls_xms: 1g
+    ls_xmx: 1g
+    ls_plugins:
+      - logstash-input-beats
+      - logstash-filter-multiline
+    elasticsearch_index_name: logstash-apache-type
+    elasticsearch_host: "{{ ansible_default_ipv4.address }}"
+    ls_enable_ssl: True
     ls_local_certs: True
     ls_ssl_key_passphrase: elastic
     ls_ssl_key_file_name: "client.key"
@@ -68,14 +87,20 @@ logstash_custom_package_url: /local/path/logstash-7.8.1.rpm
     ls_es_secure: True
     ls_es_user: elastic
     ls_es_pass: changeme
-    es_ssl: True
-    es_ssl_cacert_file_name: cert.pem
-    es_local_ssl_cacert: "files/certs/client/cert.pem"
+#    es_ssl: False
+#    es_ssl_cacert_file_name: cert.pem
+#    es_local_ssl_cacert: "files/certs/client/cert.pem"
+    es_pki: True
+    es_keystore_filename: cert.pfx
+    es_local_keystore: "files/certs/client/cert.pfx"
+    es_keystore_pass: elastic
+    es_truststore_filename: cert.pfx
+    es_local_truststore: "files/certs/client/cert.pfx"
+    es_truststore_pass: elastic
     ls_config:
       dead_letter_queue.enable: false
       pipeline.workers: 4
-      pipeline.output.workers: 1
-      queue.type: memory
+
 ```
 
 

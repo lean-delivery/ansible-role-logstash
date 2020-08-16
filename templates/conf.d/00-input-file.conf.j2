@@ -1,0 +1,8 @@
+input {
+        file {
+               path => "/tmp/access_log"
+               start_position => "beginning"
+               sincedb_path => "/tmp/.sincedb"
+               add_field => { "type" => "apache" }
+        }
+}

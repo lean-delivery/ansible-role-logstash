@@ -46,9 +46,18 @@ es_ssl: False
 es_ssl_cacert_file_name: cert.pem
 es_local_ssl_cacert: '{{ role_path }}/files/{{es_ssl_cacert_file_name}}'
 
+es_pki: False
+es_keystore_filename: ''
+es_local_keystore: '{{ role_path }}/files/{{es_keystore_filename}}'
+es_keystore_pass: ''
+es_truststore_filename: ''
+es_local_truststore: '{{ role_path }}/files/{{es_truststore_filename}}'
+es_truststore_pass: ''
+
 ls_plugin_bin: '{{ ls_home }}/bin/logstash-plugin'
 ls_plugins:
   - logstash-input-beats
+  - logstash-codec-multiline
 
 ls_add_custom_filters: True
 ls_local_custom_filters: True
