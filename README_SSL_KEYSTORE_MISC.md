@@ -41,7 +41,7 @@ Encrypted communication with elasticsearch can be achieved with the either
 ### Install specific version from a custom  package url
  ```yaml
 elastic_branch: 7
-es_version: 7.6.2                                                                                                             
+es_version: 7.6.2
 ````
 ### Install from local source
 You can disable the use of the repository with  `es_use_repository: False`
