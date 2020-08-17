@@ -87,7 +87,7 @@
     path: '{{ es_local_ssl_cacert }}'
   delegate_to: '{{ ls_local_certs | ternary("localhost", inventory_hostname) }}'
   register: es_cacert_file
-  when: ls_local_certs and es_ssl
+  when: ls_local_certs and ls_enable_ssl
 
 - name: Upload Elasticsearch local cacert file
   copy:

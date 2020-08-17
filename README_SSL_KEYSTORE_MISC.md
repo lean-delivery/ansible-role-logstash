@@ -111,4 +111,18 @@ export LOGSTASH_KEYSTORE_PASS=mypassword
 /usr/share/logstash/bin/logstash-keystore list
 
 ```
-
+ ##### Sample Apache Log file
+ ```shell script
+wget https://raw.githubusercontent.com/elastic/examples/master/Common%20Data%20Formats/apache_logs/apache_logs
+mv apache_logs /tmp/access_log
+```
+Alternatively run this playbook
+```yaml
+- name: Download sample apache log file for testing the file input pipeline 
+  hosts: logstash-node
+  tasks:
+    - name: Download the file
+      get_url:
+          url: https://raw.githubusercontent.com/elastic/examples/master/Common%20Data%20Formats/apache_logs/apache_logs
+          dest: /tmp/access_log
+```
