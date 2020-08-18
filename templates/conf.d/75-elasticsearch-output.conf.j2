@@ -4,6 +4,8 @@ output {
                 {% if es_ssl or es_pki %}
 
                 hosts => "https://{{ elasticsearch_host }}:{{ elasticsearch_port }}"
+                ssl_certificate_verification => {{ es_ssl_verification }}
+
                 {% else %}
 
                  hosts => "{{ elasticsearch_host }}:{{ elasticsearch_port }}"
@@ -36,7 +38,7 @@ output {
                    {% else %}
 
                    keystore_password => {{ ES_KEYSTORE_PASS }}
-                   truststore_password =>   {{ es_truststore_pass }}
+                   truststore_password =>   {{ ES_TRUSTSTORE_PASS }}
 
                    {% endif %}
 
