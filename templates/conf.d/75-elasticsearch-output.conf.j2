@@ -1,47 +1,49 @@
 output {
         elasticsearch {
                 action => "index"
-                {% if es_ssl or es_pki %}
+            {% if es_ssl or es_pki %}
 
-                hosts => "https://{{ elasticsearch_host }}:{{ elasticsearch_port }}"
-                ssl_certificate_verification => {{ es_ssl_verification }}
+                    hosts => "https://{{ elasticsearch_host }}:{{ elasticsearch_port }}"
+                    ssl_certificate_verification => {{ es_ssl_verification }}
 
                 {% else %}
 
-                 hosts => "{{ elasticsearch_host }}:{{ elasticsearch_port }}"
+                    hosts => "{{ elasticsearch_host }}:{{ elasticsearch_port }}"
                 {% endif %}
 
-                codec => "plain"
-                index => "{{ elasticsearch_index_name }}"
+                    codec => "plain"
+                    index => "{{ elasticsearch_index_name }}"
                 {% if ls_es_secure and ls_enable_keystore %}
 
-                 user => "${ES_USER}"
-                 password => "${ES_PASS}"
+                    user => "${ES_USER}"
+                    password => "${ES_PASS}"
 
                 {% elif ls_es_secure  %}
 
-                 user => {{ ls_es_user }}
-                 password => {{ ls_es_pass }}
+                    user => {{ ls_es_user }}
+                    password => {{ ls_es_pass }}
                 {% endif %}
+
                 {% if es_ssl %}
 
-                 ssl => true
-                 cacert => "{{ ls_cert_path }}/{{ es_ssl_cacert_file_name }}"
+                    ssl => true
+                    cacert => "{{ ls_cert_path }}/{{ es_ssl_cacert_file_name }}"
                 {% endif %}
                 {% if es_pki %}
-                   keystore => "{{ ls_cert_path }}/{{ es_keystore_filename }}"
-                   truststore => "{{ ls_cert_path }}/{{ es_truststore_filename }}"
-                   {% if ls_es_secure  %}
 
-                   keystore_password => "${ES_KEYSTORE_PASS}"
-                   truststore_password =>   "${ES_TRUSTSTORE_PASS}"
-                   {% else %}
+                    keystore => "{{ ls_cert_path }}/{{ es_keystore_filename }}"
+                    truststore => "{{ ls_cert_path }}/{{ es_truststore_filename }}"
+                {% if ls_es_secure  %}
 
-                   keystore_password => {{ ES_KEYSTORE_PASS }}
-                   truststore_password =>   {{ ES_TRUSTSTORE_PASS }}
+                    keystore_password => "${ES_KEYSTORE_PASS}"
+                    truststore_password =>   "${ES_TRUSTSTORE_PASS}"
+                {% else %}
 
-                   {% endif %}
+                    keystore_password => {{ ES_KEYSTORE_PASS }}
+                    truststore_password => {{ ES_TRUSTSTORE_PASS }}
 
                 {% endif %}
+
+            {% endif %}
         }
 }

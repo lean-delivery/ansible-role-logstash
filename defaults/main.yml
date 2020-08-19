@@ -43,7 +43,7 @@ ls_es_user: ''
 ls_es_pass: ''
 #Elasticsearch TLS encryption
 es_ssl: False
-es_ssl_verification: true
+es_ssl_verification: "true"
 es_ssl_cacert_file_name: cert.pem
 es_local_ssl_cacert: '{{ role_path }}/files/{{es_ssl_cacert_file_name}}'
 
