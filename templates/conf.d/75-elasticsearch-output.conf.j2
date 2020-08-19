@@ -5,7 +5,6 @@ output {
 
                     hosts => "https://{{ elasticsearch_host }}:{{ elasticsearch_port }}"
                     ssl_certificate_verification => {{ es_ssl_verification }}
-
                 {% else %}
 
                     hosts => "{{ elasticsearch_host }}:{{ elasticsearch_port }}"
@@ -17,13 +16,11 @@ output {
 
                     user => "${ES_USER}"
                     password => "${ES_PASS}"
-
                 {% elif ls_es_secure  %}
 
                     user => {{ ls_es_user }}
                     password => {{ ls_es_pass }}
                 {% endif %}
-
                 {% if es_ssl %}
 
                     ssl => true
@@ -41,9 +38,7 @@ output {
 
                     keystore_password => {{ ES_KEYSTORE_PASS }}
                     truststore_password => {{ ES_TRUSTSTORE_PASS }}
-
                 {% endif %}
-
             {% endif %}
         }
 }

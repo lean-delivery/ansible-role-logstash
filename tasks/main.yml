@@ -28,7 +28,7 @@
 - name: SSL preparation
   include_tasks: 'ssl/{{ ansible_system }}.yml'
   when:
-    - ls_enable_ssl
+    - ls_enable_ssl or es_ssl or es_pki
 
 - name: Logstash configuration
   include_tasks: 'configure/{{ ansible_system }}.yml'
