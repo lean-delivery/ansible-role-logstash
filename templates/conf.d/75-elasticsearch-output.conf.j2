@@ -33,12 +33,13 @@ output {
                 {% if ls_es_secure  %}
 
                     keystore_password => "${ES_KEYSTORE_PASS}"
-                    truststore_password =>   "${ES_TRUSTSTORE_PASS}"
+                    truststore_password => "${ES_TRUSTSTORE_PASS}"
                 {% else %}
 
                     keystore_password => {{ ES_KEYSTORE_PASS }}
                     truststore_password => {{ ES_TRUSTSTORE_PASS }}
                 {% endif %}
             {% endif %}
+
         }
 }

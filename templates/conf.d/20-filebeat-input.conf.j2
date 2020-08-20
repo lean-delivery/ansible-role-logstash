@@ -7,7 +7,7 @@ input {
             ssl_key => "{{ ls_key_path }}/{{ ls_ssl_key_file_name }}"
                 {% if ls_ssl_key_passphrase  and ls_enable_keystore %}
 
-            ssl_key_passphrase=>"${SSL_KEY_PASSPHRASE}"
+            ssl_key_passphrase=> "${SSL_KEY_PASSPHRASE}"
                  {% elif ls_ssl_key_passphrase and ls_enable_ssl %}
 
             ssl_key_passphrase=>{{ ls_ssl_key_passphrase }}

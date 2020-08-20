@@ -48,7 +48,7 @@ For pki use these settings,
 If keystore is enabled via `ls_enable_keystore: True` then the passwords are referenced in the config files via
 ```shell script
 keystore_password => "${ES_KEYSTORE_PASS}"
-truststore_password =>   "${ES_TRUSTSTORE_PASS}"
+truststore_password => "${ES_TRUSTSTORE_PASS}"
 ```
 Alternatively we can set the SSL settings,
 ```yaml
@@ -61,7 +61,7 @@ Alternatively we can set the SSL settings,
 
 ### Installation settings
 
-#### Install a specific version from a custom  package url
+#### Install a specific version or from a custom  package url
  ```yaml
 elastic_branch: 7
 es_version: 7.6.2
@@ -86,8 +86,6 @@ logstash_custom_package_url: /local/path/logstash-7.8.1.rpm
     - role: lean_delivery.java
     - role: logstash
 #    - role: lean_delivery.logstash
-      #transport: repositories
-      #java_major_version: 8
   vars:
     ls_enable_keystore: True
     ls_keystore_pass: mypassword
@@ -129,11 +127,13 @@ logstash_custom_package_url: /local/path/logstash-7.8.1.rpm
 ### ToDo
 [Beats Input plugin Settings](https://www.elastic.co/guide/en/logstash/current/plugins-inputs-beats.html)
 Fix `File does not contain valid private key` issue for the Beats SSL input.
+Keep `ls_enable_ssl: False` for now.
 Even when uploading PKCS#8 key file.
 
 ### Debug Tips
 
-##### Keystore
+#####  Keystore 
+
 ```shell script
 export LOGSTASH_KEYSTORE_PASS=mypassword
 /usr/share/logstash/bin/logstash-keystore list
