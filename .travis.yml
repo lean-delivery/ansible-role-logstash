@@ -25,8 +25,3 @@ script:
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
 
-skip_list:
-  - '204'
-  - '208'
-  - '106'
-  - '306'
