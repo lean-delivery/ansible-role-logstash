@@ -5,3 +5,10 @@ rulesdir:
   - ~/ansible-lint-rules/rules/
 use_default_rules: true
 verbosity: 1
+# .ansible-lint
+
+skip_list:
+  - '106'  # Role name {} does not match ``^[a-z][a-z0-9_]+$`` pattern'
+  - '204'  # Lines should be no longer than 160 chars'
+  - '208'  # File permissions not mentioned'
+  - '306'  # Shells that use pipes should set the pipefail option'

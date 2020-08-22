@@ -11,7 +11,7 @@
       synchronize:
         src: '{{ default["ls_home"] }}/'
         dest: '{{ ls_home }}/'
-        recursive: True
+        recursive: true
       delegate_to: '{{ inventory_hostname }}'
 
     - name: Remove old destination
@@ -19,7 +19,7 @@
         path: '{{ default["ls_home"] }}'
         state: absent
 
-  become: True
+  become: true
   when:
     - ls_home != default['ls_home']
     - default_home.stat.exists
@@ -64,7 +64,7 @@
         owner: '{{ ls_user }}'
         group: '{{ ls_group }}'
         mode: 0644
-        force: True
+        force: true
       loop:
         - logstash.yml
         - jvm.options
@@ -77,7 +77,7 @@
         src: default/logstash.j2
         dest: '{{ ls_default_file }}'
         mode: 0644
-        force: True
+        force: true
 
     - name: Install custom grok patterns
       copy:
@@ -125,7 +125,7 @@
         loop_var: ls_filter
       when: ls_add_custom_filters
 
-  become: True
+  become: true
 
 - block:
 
@@ -134,7 +134,7 @@
         domain: '*'
         limit_type: '{{ item }}'
         limit_item: nofile
-        use_max: True
+        use_max: true
         value: '{{ ls_limits_nofile | int }}'
       loop:
         - soft
@@ -145,7 +145,7 @@
         domain: '*'
         limit_type: '{{ item }}'
         limit_item: stack
-        use_max: True
+        use_max: true
         value: '{{ ls_limits_stack | int }}'
       loop:
         - soft
@@ -156,11 +156,11 @@
         domain: '*'
         limit_type: '{{ item }}'
         limit_item: nproc
-        use_max: True
+        use_max: true
         value: '{{ ls_limits_nproc | int }}'
       loop:
         - soft
         - hard
 
-  become: True
+  become: true
   when: ls_limits_set

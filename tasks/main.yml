@@ -23,19 +23,23 @@
     state: present
   register: package_install
   until: package_install is succeeded
-  become: True
+  become: true
 
 - name: SSL preparation
   include_tasks: 'ssl/{{ ansible_system }}.yml'
   when:
-    - ls_enable_ssl
+    - ls_enable_ssl or es_ssl or es_pki
 
 - name: Logstash configuration
   include_tasks: 'configure/{{ ansible_system }}.yml'
 
+- name: Keystore create and add secrets
+  include_tasks: 'keystore/{{ ansible_system }}.yml'
+  when:
+    - ls_enable_keystore
 - name: Logstash service
   service:
     name: '{{ ls_service_name }}'
     state: '{{ (ls_service_start) | ternary("started","stopped") }}'
     enabled: '{{ ls_service_autostart }}'
-  become: True
+  become: true

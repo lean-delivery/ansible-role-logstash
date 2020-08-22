@@ -5,8 +5,8 @@ dependency:
     role-file: requirements.yml
 driver:
   name: delegated
-lint:
-  name: yamllint
+lint: |
+  yamllint
   options:
     config-file: .yamllint
 platforms:
@@ -37,13 +37,13 @@ provisioner:
   playbooks:
     create: ../resources/provisioning/WINRM/create.yml
     destroy: ../resources/provisioning/WINRM/destroy.yml
-  lint:
-    name: ansible-lint
+  lint: |
+    ansible-lint
 scenario:
   name: cloud-aws-windows
 verifier:
   name: testinfra
   options:
     verbose: true
-  lint:
-    name: flake8
+  lint: |
+    flake8

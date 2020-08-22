@@ -5,8 +5,8 @@ dependency:
     role-file: requirements.yml
 driver:
   name: delegated
-lint:
-  name: yamllint
+lint: |
+  yamllint
   options:
     config-file: .yamllint
 platforms:
@@ -34,8 +34,8 @@ provisioner:
   config_options:
     ssh_connection:
       control_path: "/var/ans/%%h"
-  lint:
-    name: ansible-lint
+  lint: |
+    ansible-lint
   env:
     ANSIBLE_LIBRARY: ${ANSIBLE_LIBRARY}
 scenario:
@@ -45,5 +45,5 @@ verifier:
   options:
     verbose: true
   directory: ../resources/tests/
-  lint:
-    name: flake8
+  lint: |
+    flake8
