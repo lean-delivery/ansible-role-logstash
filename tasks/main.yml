@@ -42,4 +42,4 @@
     name: '{{ ls_service_name }}'
     state: '{{ (ls_service_start) | ternary("started","stopped") }}'
     enabled: '{{ ls_service_autostart }}'
-  become: True
+  become: true

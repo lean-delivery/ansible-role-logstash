@@ -9,7 +9,7 @@
   become: true
   shell: "export LOGSTASH_KEYSTORE_PASS={{ ls_keystore_pass }} && {{ ls_home }}/bin/logstash-keystore create --path.settings {{ ls_conf_dir }}"
   when:  not keystore_exists.stat.exists
-  ignore_errors: yes
+  ignore_errors: true
 
 - name: Add SSL Key Passphrase to Keystore
   become: true
