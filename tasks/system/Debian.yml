@@ -18,7 +18,7 @@
     apt_repository:
       repo: '{{ es_apt_url }}'
       state: present
-      update_cache: True
+      update_cache: true
       filename: '{{ es_repo_file }}.list'
     when: es_use_repository | bool
 
@@ -33,4 +33,4 @@
     until: installed_package is succeeded
     environment:
       LS_JAVA_OPTS: '{{ ls_java_opts }}'
-  become: True
+  become: true

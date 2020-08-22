@@ -21,7 +21,7 @@
     group: root
     mode: 0644
     remote_src: '{{ not ls_local_certs }}'
-  become: True
+  become: true
   when: key_file.stat.exists
 
 - name: Copy cert file
@@ -32,20 +32,20 @@
     group: root
     mode: 0644
     remote_src: '{{ not ls_local_certs }}'
-  become: True
+  become: true
   when: cert_file.stat.exists
 
 - name: Check if key exists
   stat:
     path: '{{ ls_key_path }}/{{ ls_ssl_key_file_name }}'
   register: key_file
-  become: True
+  become: true
 
 - name: Check if cert exists
   stat:
     path: '{{ ls_cert_path }}/{{ ls_ssl_cert_file_name }}'
   register: cert_file
-  become: True
+  become: true
 
 - block:
     - name: Install pip packages
@@ -74,12 +74,12 @@
         path: '{{ ls_cert_path }}/{{ ls_ssl_cert_file_name }}'
         privatekey_path: '{{ ls_key_path }}/{{ ls_ssl_key_file_name }}'
         provider: '{{ ls_ssl_certificate_provider }}'
-        force: True
+        force: true
 
   when:
     - not key_file.stat.exists
     - not cert_file.stat.exists
-  become: True
+  become: true
 
 #Elasticsearch Local SSL cacert pem file.
 - name: Check if Elasticsearch local cacert exists
@@ -97,7 +97,7 @@
     group: root
     mode: 0644
 #    remote_src: '{{ not ls_local_certs }}'
-  become: True
+  become: true
   when: ls_local_certs and es_ssl
 
 #Elasticsearch Local ES Keystore And trustore files
@@ -116,7 +116,7 @@
     group: root
     mode: 0644
   #    remote_src: '{{ not ls_local_certs }}'
-  become: True
+  become: true
   when: ls_local_certs and es_pki and es_local_keystore
 
 - name: Upload Elasticsearch local truststore file
@@ -127,5 +127,5 @@
     group: root
     mode: 0644
   #    remote_src: '{{ not ls_local_certs }}'
-  become: True
+  become: true
   when: ls_local_certs and es_pki and es_local_truststore
