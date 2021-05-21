@@ -62,13 +62,13 @@ Port on which elasticsearch listen to incoming requests. Default value is `9200`
 
 ## SSL certificate
 - `ls_enable_ssl`:
-To enable SSL on Logstash(to be accessed from agents). Default to `True`
+To enable SSL on Logstash(to be accessed from agents). Default to `true`
 - `ls_ssl_key_file_name`:
 Private key file name. Default to `'{{ ls_host }}.key.pem'`
 - `ls_ssl_cert_file_name`:
 Certificate file name. Default to `'{{ ls_host }}.cert.pem'`
 - `ls_local_certs`:
-To find prepared certificate files on ansible host. If False - will try to fing certificates on remote host. Default to `True`
+To find prepared certificate files on ansible host. If false - will try to fing certificates on remote host. Default to `true`
 - `ls_local_key_path`:
 Prepared private key file path. Default to `'{{ role_path }}/files/{{ ls_ssl_key_file_name }}'`
 - `ls_local_cert_path`:
@@ -91,21 +91,21 @@ Logstash plugin utility. Default to `'{{ ls_dir }}/bin/logstash-plugin'`
 Plugins list to install to Logstash. Default to `[logstash-input-beats]`
 
 - `ls_add_custom_filters`:
-Add custom filter files. Default to `True`
+Add custom filter files. Default to `true`
 - `ls_local_custom_filters`:
-If True - get files from ansible host. Otherwise get from remote host folder. Default to `True`
+If true - get files from ansible host. Otherwise get from remote host folder. Default to `true`
 - `ls_custom_filters_path`:
 Custom filters folder. Default to `'{{ role_path }}/files/filters'`
 - `ls_custom_filters_files`:
 Custom filter files to use. Default to `[25-nginx.conf,26-apache.conf,27-solr.conf]`
 
 - `ls_add_custom_grok_patterns`:
-Add custom grok patterns. Default to `True`
+Add custom grok patterns. Default to `true`
 - `ls_custom_grok_patterns_files`:
 List of custom grok patterns. Default to `[grok_patterns.custom]`
 
 - `ls_limits_set`:
-To set OS limits. Default to `True`
+To set OS limits. Default to `true`
 - `ls_limits_nofile`:
 Set maximum number of open files. Default to `204800`
 - `ls_limits_stack`:
@@ -116,9 +116,9 @@ Set maximum number of processes. Default to `24576`
 - `ls_service_name`:
 Logstash service name: Default to `logstash`
 - `ls_service_autostart`:
-Add Logstash service to automatically start. Default to `True`
+Add Logstash service to automatically start. Default to `true`
 - `ls_service_start`:
-To start Logstash service after configuration. If False - do not start Logstash after installation (useful for e.g. packer image preparation). Default to `True`
+To start Logstash service after configuration. If false - do not start Logstash after installation (useful for e.g. packer image preparation). Default to `true`
 
 - `elasticsearch_index_name`:
 Elasticsearch index name. Default to `%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}`
@@ -146,7 +146,7 @@ Example Playbook
 - name: Install and Configure Logstash
   hosts: logstash
   vars:
-    solr_change_default_password: False
+    solr_change_default_password: false
   roles:
     - role: lean_delivery.java
     - role: lean_delivery.logstash

@@ -1,40 +1,40 @@
 ---
 - block:
-  - name: Enable EPEL repository
-    yum:
-      name: 'https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm'
-      state: present
-    register: package_install
-    until: package_install is succeeded
+    - name: Enable EPEL repository
+      yum:
+        name: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm"
+        state: present
+      register: package_install
+      until: package_install is succeeded
 
-  - name: Importing latest logstash GPG Key
-    rpm_key:
-      key: '{{ elastic_gpg_key }}'
-      state: present
-    register: installed_key
-    until: installed_key is succeeded
+    - name: Importing latest logstash GPG Key
+      rpm_key:
+        key: "{{ elastic_gpg_key }}"
+        state: present
+      register: installed_key
+      until: installed_key is succeeded
 
-  - name: Add elasticsearch yum repository
-    yum_repository:
-      name: elasticsearch
-      description: Elasticsearch repository
-      file: '{{ es_repo_file }}'
-      baseurl: '{{ es_yum_url }}'
-      gpgcheck: True
-      gpgkey: '{{ elastic_gpg_key }}'
-      enabled: True
-      state: present
+    - name: Add elasticsearch yum repository
+      yum_repository:
+        name: elasticsearch
+        description: Elasticsearch repository
+        file: "{{ es_repo_file }}"
+        baseurl: "{{ es_yum_url }}"
+        gpgcheck: true
+        gpgkey: "{{ elastic_gpg_key }}"
+        enabled: true
+        state: present
 
-  - name: Redhat - Installing Logstash package
-    yum:
-      name: logstash
-      state: present
-      update_cache: True
-    register: installed_package
-    until: installed_package is succeeded
-    environment:
-      LS_JAVA_OPTS: '{{ ls_java_opts }}'
-  become: True
+    - name: Redhat - Installing Logstash package
+      yum:
+        name: logstash
+        state: present
+        update_cache: true
+      register: installed_package
+      until: installed_package is succeeded
+      environment:
+        LS_JAVA_OPTS: "{{ ls_java_opts }}"
+  become: true
 
 - name: Checking selinux support
   include_tasks: ../selinux-support.yml

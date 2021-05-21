@@ -6,29 +6,27 @@
 
 - name: Move home path if redefined
   block:
-
     - name: Copy home to new destination
       synchronize:
         src: '{{ default["ls_home"] }}/'
-        dest: '{{ ls_home }}/'
-        recursive: True
-      delegate_to: '{{ inventory_hostname }}'
+        dest: "{{ ls_home }}/"
+        recursive: true
+      delegate_to: "{{ inventory_hostname }}"
 
     - name: Remove old destination
       file:
         path: '{{ default["ls_home"] }}'
         state: absent
 
-  become: True
+  become: true
   when:
     - ls_home != default['ls_home']
     - default_home.stat.exists
 
 - block:
-
     - name: Remove default redefined paths
       file:
-        path: '{{ default[ls_path_item] }}'
+        path: "{{ default[ls_path_item] }}"
         state: absent
       when: lookup('vars', ls_path_item) != default[ls_path_item]
       loop:
@@ -42,8 +40,8 @@
       file:
         path: '{{ lookup("vars", ls_path_item) }}'
         state: directory
-        owner: '{{ ls_user }}'
-        group: '{{ ls_group }}'
+        owner: "{{ ls_user }}"
+        group: "{{ ls_group }}"
       loop:
         - ls_conf_dir
         - ls_log_dir
@@ -53,18 +51,18 @@
 
     - name: Create custom patterns directory
       file:
-        path: '{{ ls_home }}/custom_patterns'
+        path: "{{ ls_home }}/custom_patterns"
         state: directory
         mode: 0755
 
     - name: Copy Configuration Files
       template:
-        src: '{{ ls_config_item }}.j2'
-        dest: '{{ ls_conf_dir }}/{{ ls_config_item }}'
-        owner: '{{ ls_user }}'
-        group: '{{ ls_group }}'
+        src: "{{ ls_config_item }}.j2"
+        dest: "{{ ls_conf_dir }}/{{ ls_config_item }}"
+        owner: "{{ ls_user }}"
+        group: "{{ ls_group }}"
         mode: 0644
-        force: True
+        force: true
       loop:
         - logstash.yml
         - jvm.options
@@ -75,18 +73,18 @@
     - name: Copy Default File for Instance
       template:
         src: default/logstash.j2
-        dest: '{{ ls_default_file }}'
+        dest: "{{ ls_default_file }}"
         mode: 0644
-        force: True
+        force: true
 
     - name: Install custom grok patterns
       copy:
-        src: '{{ role_path }}/files/{{ grok_pattern }}'
-        dest: '{{ ls_home }}/custom_patterns/{{ grok_pattern }}'
-        owner: '{{ ls_user }}'
-        group: '{{ ls_group }}'
+        src: "{{ role_path }}/files/{{ grok_pattern }}"
+        dest: "{{ ls_home }}/custom_patterns/{{ grok_pattern }}"
+        owner: "{{ ls_user }}"
+        group: "{{ ls_group }}"
         mode: 0644
-      loop: '{{ ls_custom_grok_patterns_files }}'
+      loop: "{{ ls_custom_grok_patterns_files }}"
       loop_control:
         loop_var: grok_pattern
 
@@ -94,11 +92,11 @@
       template:
         src: '{{ ls_filter_config | regex_replace("\.j2","") }}.j2'
         dest: '{{ ls_conf_dir }}/conf.d/{{ ls_filter_config | basename | regex_replace("\.j2","") }}'
-        owner: '{{ ls_user }}'
-        group: '{{ ls_group }}'
+        owner: "{{ ls_user }}"
+        group: "{{ ls_group }}"
         mode: 0644
       with_fileglob:
-        - '{{ role_path }}/templates/conf.d/*.j2'
+        - "{{ role_path }}/templates/conf.d/*.j2"
       loop_control:
         loop_var: ls_filter_config
 
@@ -106,7 +104,7 @@
       shell: >-
         {{ ls_plugin_bin }} list {{ plugin }}
         || {{ ls_plugin_bin }} install {{ plugin }}
-      loop: '{{ ls_plugins }}'
+      loop: "{{ ls_plugins }}"
       loop_control:
         loop_var: plugin
       register: install_result
@@ -114,53 +112,52 @@
 
     - name: Install Logstash custom filters
       copy:
-        src: '{{ ls_custom_filters_path }}/{{ ls_filter }}'
-        dest: '{{ ls_conf_dir }}/conf.d/{{ ls_filter }}'
-        owner: '{{ ls_user }}'
-        group: '{{ ls_group }}'
+        src: "{{ ls_custom_filters_path }}/{{ ls_filter }}"
+        dest: "{{ ls_conf_dir }}/conf.d/{{ ls_filter }}"
+        owner: "{{ ls_user }}"
+        group: "{{ ls_group }}"
         mode: 0644
-        remote_src: '{{ not ls_local_custom_filters }}'
-      loop: '{{ ls_custom_filters_files }}'
+        remote_src: "{{ not ls_local_custom_filters }}"
+      loop: "{{ ls_custom_filters_files }}"
       loop_control:
         loop_var: ls_filter
       when: ls_add_custom_filters
 
-  become: True
+  become: true
 
 - block:
-
     - name: Set nofile limit
       pam_limits:
-        domain: '*'
-        limit_type: '{{ item }}'
+        domain: "*"
+        limit_type: "{{ item }}"
         limit_item: nofile
-        use_max: True
-        value: '{{ ls_limits_nofile | int }}'
+        use_max: true
+        value: "{{ ls_limits_nofile | int }}"
       loop:
         - soft
         - hard
 
     - name: Set stack limit
       pam_limits:
-        domain: '*'
-        limit_type: '{{ item }}'
+        domain: "*"
+        limit_type: "{{ item }}"
         limit_item: stack
-        use_max: True
-        value: '{{ ls_limits_stack | int }}'
+        use_max: true
+        value: "{{ ls_limits_stack | int }}"
       loop:
         - soft
         - hard
 
     - name: Set nproc limit
       pam_limits:
-        domain: '*'
-        limit_type: '{{ item }}'
+        domain: "*"
+        limit_type: "{{ item }}"
         limit_item: nproc
-        use_max: True
-        value: '{{ ls_limits_nproc | int }}'
+        use_max: true
+        value: "{{ ls_limits_nproc | int }}"
       loop:
         - soft
         - hard
 
-  become: True
+  become: true
   when: ls_limits_set
