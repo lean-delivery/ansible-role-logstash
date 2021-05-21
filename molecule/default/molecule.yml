@@ -5,19 +5,16 @@ dependency:
     role-file: requirements.yml
 driver:
   name: docker
-lint:
-  name: yamllint
-  options:
-    config-file: .yamllint
+lint: ansible-lint
 platforms:
-  - name: test-docker-centos7-logstash
+  - name: test-docker-centos7-ansible-role-logstash
     image: leandelivery/docker-systemd:centos7
-    privileged: True
+    privileged: true
     groups:
       - rhel_family
-  - name: test-docker-ubuntu1804-logstash
+  - name: test-docker-ubuntu1804-ansible-role-logstash
     image: leandelivery/docker-systemd:ubuntu-18.04
-    privileged: True
+    privileged: true
     security_opts:
       - seccomp=unconfined
     volumes:
@@ -31,15 +28,14 @@ platforms:
       - debian_family
 provisioner:
   name: ansible
-  # log: True
-  lint:
-    name: ansible-lint
+  log: false
+  config_options:
+    defaults:
+      callback_whitelist: profile_tasks,timer
+  playbooks:
+    verify: ../resources/tests/verify.yml
+    prepare: ../resources/prepare.yml
 scenario:
   name: default
 verifier:
-  name: testinfra
-  options:
-    verbose: true
-  directory: ../resources/tests/
-  lint:
-    name: flake8
+  name: ansible

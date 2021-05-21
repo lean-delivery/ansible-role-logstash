@@ -1,0 +1,14 @@
+---
+- name: Prepare Java
+  hosts: all
+  roles:
+    - role: lean_delivery.java
+
+- name: Prepare limits
+  hosts: rhel_family
+  tasks:
+    - name: Set Limits
+      lineinfile:
+        path: /etc/security/limits.conf
+        line: logstash soft nproc 65535
+      become: true

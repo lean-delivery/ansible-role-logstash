@@ -7,7 +7,6 @@ stages:
 before_script:
   - rm -rf molecule/resources/provisioning
   - ansible --version
-  - ansible-lint --version
   - molecule --version
   - git clone https://github.com/lean-delivery/ansible-molecule-drivers.git molecule/resources/provisioning
 
@@ -19,6 +18,8 @@ Ansible lint:
   before_script:
     - git clone https://github.com/lean-delivery/ansible-lint-rules.git ~/ansible-lint-rules
   script:
+    - ansible-lint --version
+    - yamllint . -c .yamllint
     - ansible-lint . -c .ansible-lint
   after_script:
     - rm -rf ~/ansible-lint-rules
@@ -40,21 +41,3 @@ AWS logstash:
     - molecule test -s cloud-aws-direct
   tags:
     - aws
-
-# AWS Windows logstash:
-#   variables:
-#     AWS_REGION: us-east-1
-#   stage: deployment test
-#   script:
-#     - molecule test -s cloud-aws-windows
-#   tags:
-#     - aws
-
-EPC logstash:
-  variables:
-    EPC_REGION: EPAM-BY2
-  stage: deployment test
-  script:
-    - molecule test -s cloud-epc-delegated
-  tags:
-    - delegated
