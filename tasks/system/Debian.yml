@@ -1,7 +1,7 @@
 ---
 - name: Set logstash version if defined
   set_fact:
-    ls_package_name: "{{ ls_package_name }}-{{ ls_version }}"
+    ls_package_name: "{{ ls_package_name }}={{ ls_version }}"
   when: ls_version.find('.x') == -1
 
 - block:
