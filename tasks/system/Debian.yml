@@ -28,7 +28,7 @@
 
     - name: Debian - Installing Logstash package
       apt:
-        name: "{{ ls_package_name }}"
+        name: logstash
         state: present
         force: false
       register: installed_package
