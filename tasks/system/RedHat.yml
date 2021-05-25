@@ -4,10 +4,6 @@
     ls_package_name: "{{ ls_package_name }}-{{ ls_version }}"
   when: ls_version.find('.x') == -1
 
-- name: debug
-  debug:
-    var: ls_package_name
-
 - block:
     - name: Enable EPEL repository
       yum:

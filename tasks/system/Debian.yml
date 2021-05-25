@@ -1,4 +1,9 @@
 ---
+- name: Set logstash version if defined
+  set_fact:
+    ls_package_name: "{{ ls_package_name }}-{{ ls_version }}"
+  when: ls_version.find('.x') == -1
+
 - block:
     - name: Install apt-transport-https
       package:
@@ -23,11 +28,12 @@
 
     - name: Debian - Installing Logstash package
       apt:
-        name: logstash
+        name: "{{ ls_package_name }}"
         state: present
         force: false
       register: installed_package
       until: installed_package is succeeded
       environment:
         LS_JAVA_OPTS: "{{ ls_java_opts }}"
+
   become: true
