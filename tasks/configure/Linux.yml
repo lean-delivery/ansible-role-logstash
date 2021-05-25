@@ -87,6 +87,7 @@
       loop: "{{ ls_custom_grok_patterns_files }}"
       loop_control:
         loop_var: grok_pattern
+      when: ls_add_custom_grok_patterns
 
     - name: Install Logstash configs
       template:
