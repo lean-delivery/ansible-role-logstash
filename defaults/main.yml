@@ -20,7 +20,7 @@ elasticsearch_host: elasticsearch.example.com
 elasticsearch_port: 9200
 
 #SSL certificate
-ls_enable_ssl: true
+ls_enable_ssl: false
 ls_ssl_key_file_name: "{{ ls_host }}.key.pem"
 ls_ssl_cert_file_name: "{{ ls_host }}.cert.pem"
 ls_local_certs: true

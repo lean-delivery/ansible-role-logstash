@@ -62,7 +62,7 @@ Port on which elasticsearch listen to incoming requests. Default value is `9200`
 
 ## SSL certificate
 - `ls_enable_ssl`:
-To enable SSL on Logstash(to be accessed from agents). Default to `true`
+To enable SSL on Logstash(to be accessed from agents). Default to `false`
 - `ls_ssl_key_file_name`:
 Private key file name. Default to `'{{ ls_host }}.key.pem'`
 - `ls_ssl_cert_file_name`:
