@@ -1,51 +1,51 @@
 ---
 - name: Check if local key exists
   stat:
-    path: '{{ ls_local_key_path }}'
+    path: "{{ ls_local_key_path }}"
   delegate_to: '{{ ls_local_certs | ternary("localhost", inventory_hostname) }}'
   register: key_file
   when: ls_local_certs
 
 - name: Check if local cert exists
   stat:
-    path: '{{ ls_local_cert_path }}'
+    path: "{{ ls_local_cert_path }}"
   delegate_to: '{{ ls_local_certs | ternary("localhost", inventory_hostname) }}'
   register: cert_file
   when: ls_local_certs
 
 - name: Copy key file
   copy:
-    src: '{{ ls_local_key_path }}'
-    dest: '{{ ls_key_path }}'
+    src: "{{ ls_local_key_path }}"
+    dest: "{{ ls_key_path }}"
     owner: root
     group: root
     mode: 0644
-    remote_src: '{{ not ls_local_certs }}'
-  become: True
+    remote_src: "{{ not ls_local_certs }}"
+  become: true
   when: key_file.stat.exists
 
 - name: Copy cert file
   copy:
-    src: '{{ ls_local_cert_path }}'
-    dest: '{{ ls_cert_path }}'
+    src: "{{ ls_local_cert_path }}"
+    dest: "{{ ls_cert_path }}"
     owner: root
     group: root
     mode: 0644
-    remote_src: '{{ not ls_local_certs }}'
-  become: True
+    remote_src: "{{ not ls_local_certs }}"
+  become: true
   when: cert_file.stat.exists
 
 - name: Check if key exists
   stat:
-    path: '{{ ls_key_path }}/{{ ls_ssl_key_file_name }}'
+    path: "{{ ls_key_path }}/{{ ls_ssl_key_file_name }}"
   register: key_file
-  become: True
+  become: true
 
 - name: Check if cert exists
   stat:
-    path: '{{ ls_cert_path }}/{{ ls_ssl_cert_file_name }}'
+    path: "{{ ls_cert_path }}/{{ ls_ssl_cert_file_name }}"
   register: cert_file
-  become: True
+  become: true
 
 - block:
     - name: Install pip packages
@@ -59,24 +59,24 @@
 
     - name: Create private certificate
       openssl_privatekey:
-        path: '{{ ls_key_path }}/{{ ls_ssl_key_file_name }}'
-        size: '{{ ls_ssl_key_size | int }}'
+        path: "{{ ls_key_path }}/{{ ls_ssl_key_file_name }}"
+        size: "{{ ls_ssl_key_size | int }}"
 
     - name: Create CSR
       openssl_csr:
-        path: '/tmp/{{ ls_ssl_cert_file_name }}.csr'
-        privatekey_path: '{{ ls_key_path }}/{{ ls_ssl_key_file_name }}'
-        common_name: '{{ ls_ca_domain }}'
+        path: "/tmp/{{ ls_ssl_cert_file_name }}.csr"
+        privatekey_path: "{{ ls_key_path }}/{{ ls_ssl_key_file_name }}"
+        common_name: "{{ ls_ca_domain }}"
 
     - name: Create certificates for keystore
       openssl_certificate:
-        csr_path: '/tmp/{{ ls_ssl_cert_file_name }}.csr'
-        path: '{{ ls_cert_path }}/{{ ls_ssl_cert_file_name }}'
-        privatekey_path: '{{ ls_key_path }}/{{ ls_ssl_key_file_name }}'
-        provider: '{{ ls_ssl_certificate_provider }}'
-        force: True
+        csr_path: "/tmp/{{ ls_ssl_cert_file_name }}.csr"
+        path: "{{ ls_cert_path }}/{{ ls_ssl_cert_file_name }}"
+        privatekey_path: "{{ ls_key_path }}/{{ ls_ssl_key_file_name }}"
+        provider: "{{ ls_ssl_certificate_provider }}"
+        force: true
 
   when:
     - not key_file.stat.exists
     - not cert_file.stat.exists
-  become: True
+  become: true

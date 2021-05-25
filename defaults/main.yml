@@ -1,10 +1,11 @@
 ---
 # defaults file for logstash
-elastic_branch: 6
-es_major_version: '{{ elastic_branch }}.x'
+elastic_branch: 7
+es_version: "{{ es_major_version }}"
+ls_version: "{{ es_version }}"
 
 ls_config: []
-ls_host: '{{ ansible_fqdn }}'
+ls_host: "{{ ansible_fqdn }}"
 ls_port: 5555
 ls_xms: 1g
 ls_xmx: 1g
@@ -20,48 +21,48 @@ elasticsearch_host: elasticsearch.example.com
 elasticsearch_port: 9200
 
 #SSL certificate
-ls_enable_ssl: True
-ls_ssl_key_file_name: '{{ ls_host }}.key.pem'
-ls_ssl_cert_file_name: '{{ ls_host }}.cert.pem'
-ls_local_certs: True
-ls_local_key_path: '{{ role_path }}/files/{{ ls_ssl_key_file_name }}'
-ls_local_cert_path: '{{ role_path }}/files/{{ ls_ssl_cert_file_name }}'
-ls_key_path: '{{ ls_key_default_path }}'
-ls_cert_path: '{{ ls_cert_default_path }}'
+ls_enable_ssl: false
+ls_ssl_key_file_name: "{{ ls_host }}.key.pem"
+ls_ssl_cert_file_name: "{{ ls_host }}.cert.pem"
+ls_local_certs: true
+ls_local_key_path: "{{ role_path }}/files/{{ ls_ssl_key_file_name }}"
+ls_local_cert_path: "{{ role_path }}/files/{{ ls_ssl_cert_file_name }}"
+ls_key_path: "{{ ls_key_default_path }}"
+ls_cert_path: "{{ ls_cert_default_path }}"
 ls_ssl_key_size: 4096
-ls_ca_domain: '{{ ls_host }}'
+ls_ca_domain: "{{ ls_host }}"
 # https://docs.ansible.com/ansible/latest/openssl_certificate_module.html
 ls_ssl_certificate_provider: selfsigned
 
-ls_plugin_bin: '{{ ls_home }}/bin/logstash-plugin'
+ls_plugin_bin: "{{ ls_home }}/bin/logstash-plugin"
 ls_plugins:
   - logstash-input-beats
 
-ls_add_custom_filters: True
-ls_local_custom_filters: True
-ls_custom_filters_path: '{{ role_path }}/files/filters'
+ls_add_custom_filters: true
+ls_local_custom_filters: true
+ls_custom_filters_path: "{{ role_path }}/files/filters"
 ls_custom_filters_files:
   - 25-nginx.conf
   - 26-apache.conf
   - 27-solr.conf
 
-ls_add_custom_grok_patterns: True
+ls_add_custom_grok_patterns: true
 ls_custom_grok_patterns_files:
   - grok_patterns.custom
 
-ls_limits_set: True
+ls_limits_set: true
 ls_limits_nofile: 204800
 ls_limits_stack: 4096
 ls_limits_nproc: 24576
 
 ls_service_name: logstash
-ls_service_autostart: True
-ls_service_start: True
+ls_service_autostart: true
+ls_service_start: true
 
-elasticsearch_index_name: '%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}'
+elasticsearch_index_name: "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}"
 
-es_apt_url: 'deb https://artifacts.elastic.co/packages/{{ es_repo_name }}/apt stable main'
-es_yum_url: 'https://artifacts.elastic.co/packages/{{ es_repo_name }}/yum'
-es_repo_file: 'elastic-{{ es_major_version }}'
+es_apt_url: "deb https://artifacts.elastic.co/packages/{{ es_repo_name }}/apt stable main"
+es_yum_url: "https://artifacts.elastic.co/packages/{{ es_repo_name }}/yum"
+es_repo_file: "elastic-{{ es_major_version }}"
 elastic_gpg_key: https://artifacts.elastic.co/GPG-KEY-elasticsearch
-es_use_oss_version: False
+es_use_oss_version: false

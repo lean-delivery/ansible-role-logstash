@@ -5,18 +5,16 @@ dependency:
     role-file: requirements.yml
 driver:
   name: ec2
-lint:
-  name: yamllint
-  options:
-    config-file: .yamllint
+lint: ansible-lint
 platforms:
   - name: test-aws-centos7-logstash
     image: ami-9887c6e7
+    platform: centos7
     instance_type: m5.large
     region: us-east-1
     vpc_subnet_id: subnet-05a2ef2b767afec50
-    assign_public_ip: False
-    spot_price: 0.04
+    assign_public_ip: false
+    spot_price: 0.06
     security_group_name:
       - default
     wait_timeout: 1800
@@ -24,55 +22,29 @@ platforms:
     groups:
       - rhel_family
 
-  # - name: test-aws-centos6-logstash
-  #   image: ami-1585c46a
-  #   instance_type: m4.large
-  #   region: us-east-1
-  #   vpc_subnet_id: subnet-05a2ef2b767afec50
-  #   assign_public_ip: False
-  #   spot_price: 0.04
-  #   security_group_name:
-  #     - default
-  #   wait_timeout: 1800
-  #   ssh_user: centos
-  #   groups:
-  #    - rhel_family
-
-  - name: test-aws-ubuntu16-logstash
-    image: ami-09677e0a6b14905b0
-    instance_type: m5.large
-    region: us-east-1
-    vpc_subnet_id: subnet-05a2ef2b767afec50
-    assign_public_ip: False
-    security_group_name:
-      - default
-    spot_price: 0.04
-    wait_timeout: 1800
-    ssh_user: ubuntu
-    groups:
-      - debian_family
-
   - name: test-aws-ubuntu18-logstash
     image: ami-012fd5eb46f56731f
+    platform: ubuntu18
     instance_type: m5.large
     region: us-east-1
     vpc_subnet_id: subnet-05a2ef2b767afec50
-    assign_public_ip: False
+    assign_public_ip: false
     security_group_name:
       - default
-    spot_price: 0.04
+    spot_price: 0.06
     wait_timeout: 1800
     ssh_user: ubuntu
     groups:
       - debian_family
 
-  - name: test-aws-Debian9-logstash
-    image: ami-003f19e0e687de1cd
+  - name: test-aws-Debian10-logstash
+    image: ami-0dedf6a6502877301
+    platform: debian10
     instance_type: m5.large
     region: us-east-1
     vpc_subnet_id: subnet-05a2ef2b767afec50
-    assign_public_ip: False
-    spot_price: 0.04
+    assign_public_ip: false
+    spot_price: 0.06
     security_group_name:
       - default
     wait_timeout: 1800
@@ -80,35 +52,23 @@ platforms:
     groups:
       - debian_family
 
-  # - name: test-aws-Debian8-logstash
-  #   image: ami-b14ba7a7
-  #   instance_type: m5.large
-  #   region: us-east-1
-  #   vpc_subnet_id: subnet-05a2ef2b767afec50
-  #   assign_public_ip: False
-  #   spot_price: 0.04
-  #   security_group_name:
-  #     - default
-  #   wait_timeout: 1800
-  #   ssh_user: admin
-  #   groups:
-  #     - debian_family
-
 provisioner:
   name: ansible
-  log: False
+  log: false
+  env:
+    ANSIBLE_FILTER_PLUGINS: ../../filter_plugins/
+  config_options:
+    defaults:
+      forks: 30
+      callback_whitelist: profile_tasks,timer
+    ssh_connection:
+      pipelining: true
   playbooks:
     create: ../resources/provisioning/AWS/create.yml
-    prepare: ../resources/provisioning/AWS/prepare.yml
     destroy: ../resources/provisioning/AWS/destroy.yml
-  lint:
-    name: ansible-lint
+    verify: ../resources/tests/verify.yml
+    prepare: ../resources/prepare.yml
 scenario:
   name: cloud-aws-direct
 verifier:
-  name: testinfra
-  options:
-    verbose: true
-  directory: ../resources/tests/
-  lint:
-    name: flake8
+  name: ansible

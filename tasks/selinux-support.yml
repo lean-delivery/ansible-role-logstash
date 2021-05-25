@@ -1,22 +1,28 @@
 ---
-- name: Install ansible selinux configure libraries
-  package:
-    name:
-      - policycoreutils-python
-      - libsemanage-python
-    state: present
-  register: package_install
-  until: package_install is succeeded
-  become: True
-  when: ansible_selinux.status == 'enabled'
+- block:
+    - name: Install ansible selinux configure libraries
+      package:
+        name:
+          - >-
+            {{ (ansible_facts.python.version.major | int == 2)
+              | ternary('libselinux-python','python3-libselinux') }}
+          - >-
+            {{ (ansible_facts.python.version.major | int == 2)
+              | ternary('policycoreutils-python','python3-policycoreutils') }}
+          - >-
+            {{ (ansible_facts.python.version.major | int == 2)
+              | ternary('libsemanage-python','python3-libsemanage') }}
+        state: present
+      register: installed_package
+      until: installed_package is succeeded
 
-- name: Enable connections to HTTP port
-  seport:
-    ports: '{{ ls_port }}'
-    proto: tcp
-    setype: http_port_t
-    state: present
-  become: True
+    - name: Enable connections to HTTP port
+      seport:
+        ports: "{{ ls_port }}"
+        proto: tcp
+        setype: http_port_t
+        state: present
+  become: true
   when:
     - ansible_selinux.status == 'enabled'
     - ansible_selinux.mode != 'disabled'

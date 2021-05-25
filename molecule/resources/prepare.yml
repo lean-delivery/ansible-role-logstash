@@ -1,0 +1,18 @@
+---
+- name: Prepare Java
+  hosts: all
+  roles:
+    - role: lean_delivery.java
+      java_major_version: 11
+      java_tarball_install: true
+      transport: web
+      transport_web: https://download.java.net/java/GA/jdk11/9/GPL/openjdk-11.0.2_linux-x64_bin.tar.gz
+
+- name: Prepare limits
+  hosts: rhel_family
+  tasks:
+    - name: Set Limits
+      lineinfile:
+        path: /etc/security/limits.conf
+        line: logstash soft nproc 65535
+      become: true

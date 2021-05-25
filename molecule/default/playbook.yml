@@ -1,6 +1,0 @@
----
-- name: Converge
-  hosts: all
-  roles:
-    - role: lean_delivery.java
-    - role: ansible-role-logstash
