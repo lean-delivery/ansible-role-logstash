@@ -1,7 +1,8 @@
 ---
 # defaults file for logstash
-elastic_branch: 6
-es_major_version: "{{ elastic_branch }}.x"
+elastic_branch: 7
+es_version: "{{ es_major_version }}"
+ls_version: "{{ es_version }}"
 
 ls_config: []
 ls_host: "{{ ansible_fqdn }}"

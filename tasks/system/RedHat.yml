@@ -1,13 +1,15 @@
 ---
-- block:
-    - name: Enable EPEL repository
-      yum:
-        name: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm"
-        state: present
-      register: package_install
-      until: package_install is succeeded
+- name: Set logstash version if defined
+  set_fact:
+    ls_package_name: "{{ ls_package_name }}-{{ ls_version }}"
+  when: ls_version.find('.x') == -1
 
-    - name: Importing latest logstash GPG Key
+- name: debug
+  debug:
+    var: ls_package_name
+
+- block:
+    - name: Importing latest Elastic GPG Key
       rpm_key:
         key: "{{ elastic_gpg_key }}"
         state: present
@@ -27,7 +29,7 @@
 
     - name: Redhat - Installing Logstash package
       yum:
-        name: logstash
+        name: "{{ ls_package_name }}"
         state: present
         update_cache: true
       register: installed_package

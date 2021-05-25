@@ -4,3 +4,4 @@
   roles:
     - role: ansible-role-logstash
       elastic_branch: 7
+      ls_version: 7.9.3
