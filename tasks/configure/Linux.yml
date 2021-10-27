@@ -101,6 +101,31 @@
         - '{{ role_path }}/templates/conf.d/*.j2'
       loop_control:
         loop_var: ls_filter_config
+       
+    - name: Install Custom Logstash configs
+      template:
+        src: '{{ ls_custom_config | regex_replace("\.j2","") }}.j2'
+        dest: '{{ ls_conf_dir }}/conf.d/{{ ls_custom_config | basename | regex_replace("\.j2","") }}'
+        owner: '{{ ls_user }}'
+        group: '{{ ls_group }}'
+        mode: 0644
+      with_fileglob:
+        - '{{ ls_custom_config_path }}/*.j2'
+      loop_control:
+        loop_var: ls_custom_config
+
+    - name: Install custom Logstash files
+      copy:
+        src: '{{ ls_custom_files_path }}/{{ ls_file }}'
+        dest: '{{ ls_conf_dir }}/conf.d/{{ ls_file }}'
+        owner: '{{ ls_user }}'
+        group: '{{ ls_group }}'
+        mode: 0644
+        remote_src: '{{ not ls_local_custom_files }}'
+      loop: '{{ ls_custom_files }}'
+      loop_control:
+        loop_var: ls_file
+      when: ls_add_custom_files
 
     - name: Install logstash plugins
       shell: >-

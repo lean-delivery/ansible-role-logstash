@@ -5,8 +5,8 @@ dependency:
     role-file: requirements.yml
 driver:
   name: docker
-lint:
-  name: yamllint
+lint: |
+  yamllint
   options:
     config-file: .yamllint
 platforms:
@@ -32,8 +32,8 @@ platforms:
 provisioner:
   name: ansible
   # log: True
-  lint:
-    name: ansible-lint
+  lint: |
+    ansible-lint
 scenario:
   name: default
 verifier:
@@ -41,5 +41,5 @@ verifier:
   options:
     verbose: true
   directory: ../resources/tests/
-  lint:
-    name: flake8
+  lint: |
+    flake8

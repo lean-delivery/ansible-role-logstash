@@ -20,21 +20,24 @@
       description: Elasticsearch repository
       file: '{{ es_repo_file }}'
       baseurl: '{{ es_yum_url }}'
-      gpgcheck: True
+      gpgcheck: true
       gpgkey: '{{ elastic_gpg_key }}'
-      enabled: True
+      enabled: true
       state: present
+    when: es_use_repository | bool
 
   - name: Redhat - Installing Logstash package
     yum:
-      name: logstash
+      name: >
+        {% if logstash_custom_package_url is defined %}{{ logstash_custom_package_url }}
+        {% else %} logstash-{{ es_version }}{% endif %}
       state: present
-      update_cache: True
+      update_cache: true
     register: installed_package
     until: installed_package is succeeded
     environment:
       LS_JAVA_OPTS: '{{ ls_java_opts }}'
-  become: True
+  become: true
 
 - name: Checking selinux support
   include_tasks: ../selinux-support.yml

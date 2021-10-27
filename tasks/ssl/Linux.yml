@@ -80,3 +80,70 @@
     - not key_file.stat.exists
     - not cert_file.stat.exists
   become: True
+
+#Elasticsearch Local SSL cacert pem file.
+- name: Check if Elasticsearch local cacert exists
+  stat:
+    path: '{{ es_local_ssl_cacert }}'
+  delegate_to: '{{ ls_local_certs | ternary("localhost", inventory_hostname) }}'
+  register: es_cacert_file
+  when: ls_local_certs and ls_enable_ssl
+
+- name: Upload Elasticsearch local cacert file
+  copy:
+    src: '{{ es_local_ssl_cacert }}'
+    dest: '{{ ls_cert_path }}'
+    owner: root
+    group: root
+    mode: 0644
+#    remote_src: '{{ not ls_local_certs }}'
+  become: True
+  when: ls_local_certs and es_ssl
+
+#Elasticsearch Monitoring  Local SSL cacert pem file. es_local_mon_ssl_cacert:
+- name: Check if Elasticsearch Monitoring local cacert exists
+  stat:
+    path: '{{ es_local_ssl_cacert }}'
+  delegate_to: '{{ ls_local_certs | ternary("localhost", inventory_hostname) }}'
+  register: es_cacert_file
+  when: es_local_mon_certs and es_mon_ssl
+
+- name: Upload Elasticsearch Monitoring local cacert file
+  copy:
+    src: '{{ es_local_mon_ssl_cacert }}'
+    dest: '{{ ls_cert_path }}'
+    owner: root
+    group: root
+    mode: 0644
+#    remote_src: '{{ not ls_local_certs }}'
+  become: True
+  when: es_local_mon_certs and es_mon_ssl
+#Elasticsearch Local ES Keystore And trustore files
+- name: Check if Elasticsearch local cacert exists
+  stat:
+    path: '{{ es_local_ssl_cacert }}'
+  delegate_to: '{{ ls_local_certs | ternary("localhost", inventory_hostname) }}'
+  register: es_keystore_file
+  when: ls_local_certs and es_pki
+
+- name: Upload Elasticsearch local keystore file
+  copy:
+    src: '{{ es_local_keystore }}'
+    dest: '{{ ls_cert_path }}'
+    owner: root
+    group: root
+    mode: 0644
+  #    remote_src: '{{ not ls_local_certs }}'
+  become: True
+  when: ls_local_certs and es_pki and es_local_keystore
+
+- name: Upload Elasticsearch local truststore file
+  copy:
+    src: '{{ es_local_truststore }}'
+    dest: '{{ ls_cert_path }}'
+    owner: root
+    group: root
+    mode: 0644
+  #    remote_src: '{{ not ls_local_certs }}'
+  become: True
+  when: ls_local_certs and es_pki and es_local_truststore

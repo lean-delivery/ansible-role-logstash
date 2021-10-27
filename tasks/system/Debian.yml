@@ -18,16 +18,19 @@
     apt_repository:
       repo: '{{ es_apt_url }}'
       state: present
-      update_cache: True
+      update_cache: true
       filename: '{{ es_repo_file }}.list'
+    when: es_use_repository | bool
 
   - name: Debian - Installing Logstash package
     apt:
-      name: logstash
+      name: >
+        {% if logstash_custom_package_url is defined %}{{ logstash_custom_package_url }}
+        {% else %} logstash-{{ es_version }}{% endif %}
       state: present
-      force: False
+      force: false
     register: installed_package
     until: installed_package is succeeded
     environment:
       LS_JAVA_OPTS: '{{ ls_java_opts }}'
-  become: True
+  become: true
