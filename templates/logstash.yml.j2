@@ -6,13 +6,11 @@
 {% if ls_config['http.host'] is not defined %}
 http.host: {{ ls_host }}
 {% endif %}
-
 #################################### Paths ####################################
 
 # Path to directory containing configuration (this file and logging.yml):
 
 path.data: {{ ls_data_dir }}
-
 path.logs: {{ ls_log_dir }}
 
 # Settings file in YAML
@@ -142,7 +140,7 @@ path.logs: {{ ls_log_dir }}
 # ------------ Queuing Settings --------------
 #
 # Internal queuing model, "memory" for legacy in-memory based queuing and
-# "persisted" for disk-based acked queueing. Defaults is memory
+# "persisted" for disk-based backed queueing. Defaults is memory
 #
 # queue.type: memory
 #
@@ -203,8 +201,7 @@ path.logs: {{ ls_log_dir }}
 # ------------ Metrics Settings --------------
 #
 # Bind address for the metrics REST endpoint
-#
-# http.host: "127.0.0.1"
+#http.host: "127.0.0.1"
 #
 # Bind port for the metrics REST endpoint, this option also accept a range
 # (9600-9700) and logstash will pick up the first available ports.
@@ -236,20 +233,27 @@ path.logs: {{ ls_log_dir }}
 # ------------ X-Pack Settings (not applicable for OSS build)--------------
 #
 # X-Pack Monitoring
+{% if ls_enable_mon|bool == true %}
 # https://www.elastic.co/guide/en/logstash/current/monitoring-logstash.html
-#xpack.monitoring.enabled: false
-#xpack.monitoring.elasticsearch.username: logstash_system
-#xpack.monitoring.elasticsearch.password: password
-#xpack.monitoring.elasticsearch.hosts: ["https://es1:9200", "https://es2:9200"]
+xpack.monitoring.enabled: true
+xpack.monitoring.elasticsearch.username: logstash_system
+xpack.monitoring.elasticsearch.password: "${LS_SYSTEM_MON_PASS}"
+xpack.monitoring.elasticsearch.hosts: ["https://{{elasticsearch_mon_host}}:{{elasticsearch_port}}"]
 # an alternative to hosts + username/password settings is to use cloud_id/cloud_auth
 #xpack.monitoring.elasticsearch.cloud_id: monitoring_cluster_id:xxxxxxxxxx
 #xpack.monitoring.elasticsearch.cloud_auth: logstash_system:password
-#xpack.monitoring.elasticsearch.ssl.certificate_authority: [ "/path/to/ca.crt" ]
-#xpack.monitoring.elasticsearch.ssl.truststore.path: path/to/file
-#xpack.monitoring.elasticsearch.ssl.truststore.password: password
-#xpack.monitoring.elasticsearch.ssl.keystore.path: /path/to/file
-#xpack.monitoring.elasticsearch.ssl.keystore.password: password
-#xpack.monitoring.elasticsearch.ssl.verification_mode: certificate
+{% if es_local_mon_ssl_cacert%}
+xpack.monitoring.elasticsearch.ssl.certificate_authority: "{{ ls_cert_path }}/{{ es_local_mon_ssl_cacert_filename }}"
+xpack.monitoring.elasticsearch.ssl.verification_mode: certificate
+{% else %}
+xpack.monitoring.elasticsearch.ssl.truststore.path: "{{ ls_cert_path }}/{{ es_truststore_filename }}"
+xpack.monitoring.elasticsearch.ssl.truststore.password: "${ES_TRUSTSTORE_PASS}"
+xpack.monitoring.elasticsearch.ssl.keystore.path: "{{ ls_cert_path }}/{{ es_keystore_filename }}"
+xpack.monitoring.elasticsearch.ssl.keystore.password: "${ES_KEYSTORE_PASS}"
+xpack.monitoring.elasticsearch.ssl.verification_mode: certificate
+
+{% endif %}
+{% endif %}
 #xpack.monitoring.elasticsearch.sniffing: false
 #xpack.monitoring.collection.interval: 10s
 #xpack.monitoring.collection.pipeline.details.enabled: true
