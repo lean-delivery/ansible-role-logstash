@@ -136,7 +136,7 @@ Even when uploading PKCS#8 key file.
 
 ```shell script
 export LOGSTASH_KEYSTORE_PASS=mypassword
-/usr/share/logstash/bin/logstash-keystore list
+/usr/share/logstash/bin/logstash-keystore list  --path.settings /etc/logstash
 
 ```
  ##### Sample Apache Log file
@@ -153,4 +153,12 @@ Alternatively run this playbook
       get_url:
           url: https://raw.githubusercontent.com/elastic/examples/master/Common%20Data%20Formats/apache_logs/apache_logs
           dest: /tmp/access_log
+```
+
+######## Generate your own CA file for HTTPS connectivity to the elasticsearch cluster.
+```shell
+openssl s_client -showcerts \
+-connect es-node.example.com:443 \
+</dev/null 2>/dev/null|openssl x509 \
+-outform PEM >server-ca.pem
 ```

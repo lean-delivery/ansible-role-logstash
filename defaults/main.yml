@@ -19,7 +19,7 @@ ls_nice_level: '{{ default["ls_nice_level"] }}'
 ls_keystore_pass: ''
 elasticsearch_host: elasticsearch.example.com
 elasticsearch_port: 9200
-
+elasticsearch_output_host: elasticsearch.example.com
 #SSL certificate for Beats input.
 ls_enable_ssl: True
 ls_ssl_key_file_name: '{{ ls_host }}.key.pem'
@@ -54,7 +54,8 @@ es_keystore_pass: ''
 es_truststore_filename: ''
 es_local_truststore: '{{ role_path }}/files/{{es_truststore_filename}}'
 es_truststore_pass: ''
-
+ls_enable_mon: false
+ls_system_pass: ''
 ls_plugin_bin: '{{ ls_home }}/bin/logstash-plugin'
 ls_plugins:
   - logstash-input-beats
@@ -67,11 +68,11 @@ ls_custom_filters_files:
   - 25-nginx.conf
   - 26-apache.conf
   - 27-solr.conf
+  - 31-alblog.conf
 
 ls_add_custom_grok_patterns: True
 ls_custom_grok_patterns_files:
   - grok_patterns.custom
-
 ls_limits_set: True
 ls_limits_nofile: 204800
 ls_limits_stack: 4096
@@ -88,3 +89,16 @@ es_yum_url: 'https://artifacts.elastic.co/packages/{{ es_repo_name }}/yum'
 es_repo_file: 'elastic-{{ es_major_version }}'
 elastic_gpg_key: https://artifacts.elastic.co/GPG-KEY-elasticsearch
 es_use_oss_version: False
+
+ls_custom_config_path: '{{ role_path }}/files/config'
+
+ls_local_custom_files: False
+ls_custom_files: []
+ls_add_custom_files: False
+
+
+ls_custom_files_path: ''
+
+ls_output_entsearch_key: False
+ls_input_jdbc_user: ''
+ls_input_jdbc_pass: ''
